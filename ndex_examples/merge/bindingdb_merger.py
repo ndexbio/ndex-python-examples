@@ -147,8 +147,6 @@ def match(source_network, edge, destination_network):
     aliases = destination_network['aliases']
 
 
-
-
 def merge_network(source_network, destination_network):
 
     network_alias_node_id_map = create_alias_node_id_map(destination_network)
@@ -176,4 +174,11 @@ def merge_network(source_network, destination_network):
                 destination_node = destination_network['nodes'][node_id]
                 merge_node_properties(source_network, object_node, destination_network, destination_node)
 
-
+def merge_provenance(src1_prov, src2_prov, upload_prov):
+    result = copy.deepcopy(upload_prov)
+    result['creationEvent']['eventType'] = unicode('Demo Merge')
+    inputs = []
+    inputs.append(src1_prov)
+    inputs.append(src2_prov)
+    result['creationEvent']['inputs'] = inputs
+    return result

@@ -1,1 +1,4 @@
 *.pyc
+.idea/misc.xml
+
+.idea/ndex-python-examples.iml

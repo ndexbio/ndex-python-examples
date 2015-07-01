@@ -148,8 +148,9 @@ def match(source_network, edge, destination_network):
 
 
 def merge_network(source_network, destination_network):
+    result = copy.deepcopy(destination_network)
 
-    network_alias_node_id_map = create_alias_node_id_map(destination_network)
+    network_alias_node_id_map = create_alias_node_id_map(result)
 
     # print network_name_node_id_map
 
@@ -162,17 +163,20 @@ def merge_network(source_network, destination_network):
         if source_node_name in network_alias_node_id_map:
             for node_id in network_alias_node_id_map[source_node_name]:
                 e = copy.deepcopy(edge)
-                new_edge_id = unicode( get_next_id(destination_network) )
+                new_edge_id = unicode( get_next_id(result) )
                 e['id'] = new_edge_id
                 e['objectId'] = node_id
-                add_node(source_network, e, destination_network)
-                clean_object_properties(source_network, e, destination_network)
-                handle_citations(source_network, e, destination_network)
-                handle_represents(source_network, e, destination_network)
-                destination_network['edges'][new_edge_id] = e
+                add_node(source_network, e, result)
+                clean_object_properties(source_network, e, result)
+                handle_citations(source_network, e, result)
+                handle_represents(source_network, e, result)
+                result['edges'][new_edge_id] = e
 
-                destination_node = destination_network['nodes'][node_id]
-                merge_node_properties(source_network, object_node, destination_network, destination_node)
+                result_node = result['nodes'][node_id]
+                merge_node_properties(source_network, object_node, result, result_node)
+    result['nodeCount'] = len(result['nodes'])
+    result['edgeCount'] = len(result['edges'])
+    return result
 
 def merge_provenance(src1_prov, src2_prov, upload_prov):
     result = copy.deepcopy(upload_prov)

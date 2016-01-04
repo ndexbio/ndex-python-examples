@@ -1,5 +1,5 @@
 *.pyc
 .idea
 .idea/*
-ndex_examples/test_files/*
+ndex_examples/merge/test_files/*
 

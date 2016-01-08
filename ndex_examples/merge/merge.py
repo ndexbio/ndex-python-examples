@@ -64,22 +64,23 @@ def merge(from_network, to_network, from_network_node_to_gene_map, to_network_ge
     for from_node in from_network.get_nodes():
         from_gene = from_network_node_to_gene_map.get(from_node.id)
         if from_gene:
-            to_node = to_network_gene_to_node_map.get(from_gene)
-            if to_node:
-                shared_nodes[from_node.id] = to_node.id
+            to_node_id = to_network_gene_to_node_map.get(from_gene)
+            if to_node_id:
+                shared_nodes[from_node.id] = to_node_id
 
     # copy edges containing shared nodes
+    added_nodes = {}
     for from_edge in from_network.get_edges():
         if shared_nodes.get(from_edge.s.id) or shared_nodes.get(from_edge.t.id):
-            copy_edge(from_edge, to_network, from_network, shared_nodes, from_network_node_to_gene_map)
+            copy_edge(from_edge, from_network, to_network, shared_nodes, from_network_node_to_gene_map, added_nodes)
 
     return to_network
 
 
-def copy_edge(edge, from_network, to_network, shared_nodes, from_network_node_to_gene_map):
-    source_id = to_network.find_or_add_node(edge.s, shared_nodes, from_network_node_to_gene_map)
-    target_id = to_network.find_or_add_node(edge.t, shared_nodes, from_network_node_to_gene_map)
-    return to_network.find_or_create_edge(source_id, target_id, edge.i, edge.attributes)
+def copy_edge(edge, from_network, to_network, shared_nodes, from_network_node_to_gene_map, added_nodes):
+    source_id = to_network.find_or_add_node(edge.s, shared_nodes, from_network_node_to_gene_map, added_nodes)
+    target_id = to_network.find_or_add_node(edge.t, shared_nodes, from_network_node_to_gene_map, added_nodes)
+    return to_network.find_or_add_edge(source_id, target_id, edge.i, edge.attributes)
 
 
 

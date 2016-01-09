@@ -114,7 +114,7 @@ class NetworkCX(ObjectWithAttributes):
 
     def from_cx(self, cx_stream, include_opaque=False):
         self.include_opaque = include_opaque
-        cx = json.load(cx_stream)
+        cx = cx_stream
         for fragment in cx:
             fragment_name, elements = list(fragment.items())[0]
             for element in elements:

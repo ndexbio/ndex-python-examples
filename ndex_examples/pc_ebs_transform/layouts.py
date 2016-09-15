@@ -3,11 +3,16 @@ import networkx as nx
 def _create_edge_tuples(attractor, target):
     return [(a,t) for a in attractor for t in target]
 
-def _add_attractor(G, attracted_nodes):
+def _add_attractor(network, attracted_nodes, attractor_name):
     attractor_list =[]
-    attractor_list.append(G.add_new_node())
-    edge_tuples = _create_edge_tuples(attractor_list, attracted_nodes)
-    G.add_edges_from(edge_tuples, interaction='in-complex-with')
+    attractor_list.append(network.add_new_node(name=attractor_name))
+    for attractor in attractor_list:
+        for node in attracted_nodes:
+            network.add_edge(node, attractor, interaction='in-complex-with')
+
+            #network.add_edge_between(node, attractor, interaction='in-complex-with')
+    #edge_tuples = _create_edge_tuples(attractor_list, attracted_nodes)
+    #network.add_edges_from(edge_tuples, interaction='in-complex-with')
     return attractor_list[0]
 
 def apply_directed_flow_layout(G, directed_edge_types):
@@ -45,19 +50,34 @@ def apply_directed_flow_layout(G, directed_edge_types):
 
     if len(target_only_nodes) > 0:
         print target_only_nodes
-        downstream_attractor = _add_attractor(G, target_only_nodes)
-        initial_pos[downstream_attractor] = (1, 0.5)
+        downstream_attractor = _add_attractor(G, target_only_nodes, "downstream")
+        initial_pos[downstream_attractor] = (1.0, 0.5)
         fixed.append(downstream_attractor)
 
     if len(source_only_nodes) > 0:
         print source_only_nodes
-        upstream_attractor = _add_attractor(G, source_only_nodes)
-        initial_pos[upstream_attractor] = (0, 0.5)
+        upstream_attractor = _add_attractor(G, source_only_nodes, "upstream")
+        initial_pos[upstream_attractor] = (0.0, 0.5)
         fixed.append(upstream_attractor)
 
     print fixed
 
     G.pos = nx.spring_layout(G.to_undirected(), pos=initial_pos, fixed=fixed)
+
+    for node_id in G.nodes():
+        node_name = G.get_node_attribute_value_by_id(node_id)
+        if node_name is None:
+            node_name = "Unknown " + str(node_id)
+
+        if node_id in G.pos:
+            pos = G.pos[node_id]
+            if pos is not None:
+                print node_name + " : " + str(pos)
+            else:
+                print node_name + "Null Position"
+
+        else:
+            print node_name + "No Position"
 
     #G.remove_nodes_from([downstream_attractor])
     #G.remove_nodes_from([upstream_attractor])

@@ -1,5 +1,6 @@
 from ndex.networkn import NdexGraph
 from layouts import apply_directed_flow_layout
+import ndex.beta.toolbox as toolbox
 
 
 ndex_server = 'http://www.ndexbio.org'
@@ -34,6 +35,14 @@ for edge in G.edges(keys=True):
     if interaction in filter_list:
         G.remove_edge(source_id, target_id, edge_id)
 
+for node_id in G.nodes():
+    node_name = G.get_node_attribute_value_by_id(node_id)
+    degree = G.degree([node_id])[node_id]
+    print node_name + " : " + str()
+    if degree is 0:
+        print " -- removing " + str(node_name) + " " + str(node_id)
+        G.remove_node(node_id)
+
 # Step 2:
 #   apply a layout
 apply_directed_flow_layout(G, ['controls-phosphorylation-of', 'controls-transport-of'])
@@ -42,10 +51,15 @@ apply_directed_flow_layout(G, ['controls-phosphorylation-of', 'controls-transpor
 #   get a template network
 #   apply the visual style
 
+# Apply a cytoscape style from a template network
+
+toolbox.apply_template(G, template_network_uuid)
+
 # Step 4
 #   write the network as a new network in the selected account
 
-G.set_name('filtered network')
+G.set_name('scratch network')
 
 G.upload_to(ndex_server, username, password)
 
+G.write_to("/Users/dexter/scratch_network.cx")

@@ -73,22 +73,22 @@ def indra_causality(netn_obj,two_way_edgetypes):
 #     for e2 in add_reverse_edges:
 #         netn_obj.add_edge_between(e2[1],e2[0],interaction=e2[2])
 
-def k_shortest_paths_multi(G, sources,targets,npaths=20):
-    names = [G.node[n]['name'] for n in G.nodes_iter()]
-    sources_list=[G.get_node_ids(i) for i in list(set(sources).intersection(set(names)))]
-    sources_ids= list(chain(*sources_list))
-    targets_list=[G.get_node_ids(i) for i in list(set(targets).intersection(set(names)))]
-    targets_ids= list(chain(*targets_list))
-    path_counter=0
+def k_shortest_paths_multi(G, source_names, target_names, npaths=20):
+    # names = [G.node[n]['name'] for n in G.nodes_iter()]
+    # sources_list=[G.get_node_ids(i) for i in list(set(sources).intersection(set(names)))]
+    # sources_ids= list(chain(*sources_list))
+    # targets_list=[G.get_node_ids(i) for i in list(set(targets).intersection(set(names)))]
+    # targets_ids= list(chain(*targets_list))
+    source_ids = get_node_ids_by_names(G,source_names)
+    target_ids = get_node_ids_by_names(G,target_names)
     g=nx.DiGraph(G)
     all_shortest_paths = []
-    for s in sources_ids:
-        for t in targets_ids:
+    for s in source_ids:
+        for t in target_ids:
             sp_list=k_shortest_paths(g,s,t,npaths)
             for path in sp_list:
                 all_shortest_paths.append(path)
-            #path_counter=shortest_paths_csv(sp_list, netn_obj, fh,path_counter=path_counter)
-    return list(all_shortest_paths)
+    return all_shortest_paths
 
 def network_from_paths(G, forward, reverse, sources, targets):
     M = NdexGraph()

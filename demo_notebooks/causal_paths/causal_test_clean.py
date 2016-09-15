@@ -13,7 +13,7 @@ network_id='50e3dff7-133e-11e6-a039-06603eb7f303'
 G = NdexGraph(server=ndex_server, uuid=network_id, username=rm_username, password=rm_password)
 
 # Compute the source-target network
-P1 = cu.get_source_target_network(G, ['EGFR'], ['MAP2K1, MAP2K2'], "EGFR to MAP2K1, MAP2K2", npaths=20)
+P1 = cu.get_source_target_network(G, ['EGFR'], ['MAP2K1', 'MAP2K2'], "EGFR to MAP2K1, MAP2K2", npaths=20)
 
 # Apply a layout
 toolbox.apply_source_target_layout(P1)

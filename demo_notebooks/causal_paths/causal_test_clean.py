@@ -3,6 +3,16 @@ from ndex.networkn import NdexGraph
 import ndex.beta.toolbox as toolbox
 import causal_utilities as cu
 
+
+import argparse
+
+parser = argparse.ArgumentParser(description='clean_and_layout_pc_ebs')
+
+parser.add_argument('ndex_input', action='store')
+parser.add_argument('ndex_output', action='store')
+parser.add_argument('username', action='store')
+parser.add_argument('password', action='store')
+
 # NDEx Connection
 ndex_server = "http://public.ndexbio.org"
 rm_username="test"

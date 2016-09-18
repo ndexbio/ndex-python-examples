@@ -79,7 +79,7 @@ def apply_directed_flow_layout(G, directed_edge_types):
         else:
             print node_name + "No Position"
 
-    #G.remove_nodes_from([downstream_attractor])
-    #G.remove_nodes_from([upstream_attractor])
+    G.remove_nodes_from([downstream_attractor])
+    G.remove_nodes_from([upstream_attractor])
 
     print G.pos

@@ -2,4 +2,6 @@
 .idea
 .idea/*
 ndex_examples/merge/test_files/*
+.idea/.name
+.idea/encodings.xml
 

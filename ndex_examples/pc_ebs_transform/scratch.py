@@ -1,6 +1,7 @@
 from ndex.networkn import NdexGraph
 from layouts import apply_directed_flow_layout
 import ndex.beta.toolbox as toolbox
+import pc_ebs_transform as pc_xform
 
 import argparse
 
@@ -29,25 +30,9 @@ print "password is " + arg.password
 
 G = NdexGraph(server=arg.ndex_input, uuid=source_network_uuid)
 
-# Step 1:
-#   remove edges on filter_list
+pc_xform.filter_pc_ebs(G, filter_list)
 
-for edge in G.edges(keys=True):
-    edge_id = edge[2]
-    source_id = edge[0]
-    target_id = edge[1]
-    interaction = G.get_edge_attribute_value_by_id(edge_id, "interaction")
-    if interaction in filter_list:
-        G.remove_edge(source_id, target_id, edge_id)
-
-#   remove nodes with no edges
-for node_id in G.nodes():
-    node_name = G.get_node_attribute_value_by_id(node_id)
-    degree = G.degree([node_id])[node_id]
-    print node_name + " : " + str()
-    if degree is 0:
-        print " -- removing " + str(node_name) + " " + str(node_id)
-        G.remove_node(node_id)
+pc_xform.remove_orphans(G)
 
 # Step 2:
 #   apply a directed flow layout

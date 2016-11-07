@@ -1,7 +1,7 @@
 
 from ndex.networkn import NdexGraph
 import ndex.beta.toolbox as toolbox
-import causal_utilities as cu
+import demo_notebooks.causal_paths.causal_utilities as cu
 
 
 import argparse

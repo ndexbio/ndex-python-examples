@@ -145,10 +145,16 @@ def get_source_target_network(reference_network, source_names, target_names, new
 
     source_ids=get_node_ids_by_names(reference_network, source_names)
     target_ids=get_node_ids_by_names(reference_network, target_names)
+
+    #TODO sort paths by length
+
+
     P1 = network_from_paths(reference_network, forward1, reverse1, source_ids, target_ids)
     P1.set_name(new_network_name)
     print "Created " + P1.get_name()
-    return P1
+    forward1.sort(key = lambda s: len(s))
+    reverse1.sort(key = lambda s: len(s))
+    return {'forward': forward1[:npaths], 'reverse': reverse1[:npaths], 'network': P1}
 
 #P1.write_to("/Users/dexter/bad_network.cx")
 

@@ -86,6 +86,8 @@ def find_directed_path_directed2():
                 pathnum = int(pathnum, 10)
             else:
                 pathnum = 20
+        else:
+                pathnum = 20
 
         directedPaths = DirectedPaths()
         if(pathnum is not None):

@@ -58,7 +58,7 @@ def find_directed_path_directed2():
         #==================================
         # VERIFY SOURCE NODES ARE PRESENT
         #==================================
-        if('source' in query_string.keys()):
+        if('source' in query_string.keys() and len(query_string['source']) > 0):
             source = query_string['source'].split()
         else:
             response.status = 400
@@ -69,7 +69,7 @@ def find_directed_path_directed2():
         #==================================
         # VERIFY TARGET NODES ARE PRESENT
         #==================================
-        if('target' in query_string.keys()):
+        if('target' in query_string.keys() and len(query_string['target']) > 0):
             target = query_string['target'].split()
         else:
             response.status = 400

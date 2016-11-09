@@ -55,8 +55,33 @@ class DirectedPaths:
         #TODO: Process the forward and reverse lists.  Generate [{node1},{edge1},{node2},{edge2},etc...]
 
         F = P1.get('forward')
+        R = P1.get('reverse')
         G = P1.get('network')
-        FEdge = G.edges(data=True)
 
-        return {'forward': P1.get('forward'), 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
+        new_forward_list = self.label_node_list(F, G)
 
+        return {'forward': P1.get('forward'), 'forward_english': new_forward_list, 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
+
+    def label_node_list(self, n_list, G):
+        outer = []
+        for f in n_list:
+            inner = []
+            next_node = 1
+            #====================================
+            # Take an array of nodes and fill in
+            # the edge between the nodes
+            #====================================
+            while(next_node < len(f)):
+                this_edge = G.edge.get(f[next_node - 1]).get(f[next_node]) if G.edge.get(f[next_node - 1]) is not None else None
+                if(this_edge is not None):
+                    inner.append(G.node.get(f[next_node - 1]).get('name'))
+                    inner.append(G[f[next_node - 1]][f[next_node]].itervalues().next()['interaction'])
+
+                next_node += 1
+
+            # The last node needs to be added after the final edge is identified
+            inner.append(G.node.get(f[next_node - 1]).get('name'))
+
+            outer.append(inner)
+
+        return outer

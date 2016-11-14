@@ -46,41 +46,40 @@ class DirectedPaths:
         P1 = cu.get_source_target_network(G, source_list, target_list, "Title placeholder", npaths=npaths)
 
         # Apply a layout
-        toolbox.apply_source_target_layout(P1.get('network'))
+        #toolbox.apply_source_target_layout(P1.get('network'))
 
         # Apply a cytoscape style from a template network
         template_id = '4f53171c-600f-11e6-b0a6-06603eb7f303'
-        toolbox.apply_template(P1.get('network'), template_id)
+        #toolbox.apply_template(P1.get('network'), template_id)
 
         #TODO: Process the forward and reverse lists.  Generate [{node1},{edge1},{node2},{edge2},etc...]
 
         F = P1.get('forward')
         R = P1.get('reverse')
-        G = P1.get('network')
+        G_prime = P1.get('network')
 
-        new_forward_list = self.label_node_list(F, G)
+        new_forward_list = self.label_node_list(F, G, G_prime)
 
         return {'forward': P1.get('forward'), 'forward_english': new_forward_list, 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
 
-    def label_node_list(self, n_list, G):
+    def label_node_list(self, n_list, G, G_prime):
         outer = []
         for f in n_list:
             inner = []
-            next_node = 1
             #====================================
             # Take an array of nodes and fill in
             # the edge between the nodes
             #====================================
-            while(next_node < len(f)):
-                this_edge = G.edge.get(f[next_node - 1]).get(f[next_node]) if G.edge.get(f[next_node - 1]) is not None else None
+            for first, second in zip(f, f[1:]):
+                this_edge = G_prime.edge.get(first).get(second)
+                print G.get_edge_data(first,second)
+
                 if(this_edge is not None):
-                    inner.append(G.node.get(f[next_node - 1]).get('name'))
-                    inner.append(G[f[next_node - 1]][f[next_node]].itervalues().next()['interaction'])
+                    if(len(inner) < 1):
+                        inner.append(G_prime.node.get(first).get('name'))
 
-                next_node += 1
-
-            # The last node needs to be added after the final edge is identified
-            inner.append(G.node.get(f[next_node - 1]).get('name'))
+                    inner.append(G.get_edge_data(first,second))
+                    inner.append(G_prime.node.get(second).get('name'))
 
             outer.append(inner)
 

@@ -1,0 +1,3 @@
+Query to amigo to get filtered human annotations
+
+http://amigo2.berkeleybop.org/amigo/search/annotation?q=*:*&fq=taxon_subset_closure_label:%22Homo%20sapiens%22&fq=-evidence_subset_closure_label:%22evidence%20used%20in%20automatic%20assertion%22&fq=-evidence_subset_closure_label:%22no%20biological%20data%20found%20used%20in%20manual%20assertion%22&fq=-evidence_subset_closure_label:%22curator%20inference%20used%20in%20manual%20assertion%22&fq=-evidence_subset_closure_label:%22similarity%20evidence%20used%20in%20manual%20assertion%22&fq=-evidence_subset_closure_label:%22expression%20evidence%20used%20in%20manual%20assertion%22&fq=-regulates_closure_label:%22molecular_function%22&fq=-regulates_closure_label:%22cellular_component%22&sfq=document_category:%22annotation%22

@@ -85,9 +85,14 @@ def k_shortest_paths_multi(G, source_names, target_names, npaths=20):
     all_shortest_paths = []
     for s in source_ids:
         for t in target_ids:
-            sp_list=k_shortest_paths(g,s,t,npaths)
-            for path in sp_list:
-                all_shortest_paths.append(path)
+            try:
+                sp_list=k_shortest_paths(g,s,t,npaths)
+                for path in sp_list:
+                    all_shortest_paths.append(path)
+
+            except Exception as inst:
+                print "exception in shortest paths: " + str(inst)
+
     return all_shortest_paths
 
 def network_from_paths(G, forward, reverse, sources, targets):
@@ -155,6 +160,86 @@ def get_source_target_network(reference_network, source_names, target_names, new
     forward1.sort(key = lambda s: len(s))
     reverse1.sort(key = lambda s: len(s))
     return {'forward': forward1[:npaths], 'reverse': reverse1[:npaths], 'network': P1}
+
+def get_source_target_network_new (network, source_names, target_names, new_network_name, npaths=20, direction='all'):
+    # forward and reverse direction paths for first pair of sources and targets
+    forward = []
+    reverse = []
+    if direction == 'all' or direction == 'forward':
+        forward = k_shortest_paths_multi(network, source_names, target_names, npaths)
+    if direction == 'all' or direction == 'reverse':
+        reverse = k_shortest_paths_multi(network, target_names, source_names, npaths)
+        
+    forward_node_id_list, forward_edge_id_list = path_element_lists(network, forward)
+    forward_node_id_set = set(forward_node_id_list)
+    reverse_node_id_list, reverse_edge_id_list = path_element_lists(network, reverse)
+    reverse_node_id_set = set(reverse_node_id_list)
+    node_id_set = forward_node_id_set.union(reverse_node_id_set)
+    edge_id_set = set(forward_edge_id_list).union(set(reverse_edge_id_list))
+
+    for node_id in forward_node_id_list:
+        network.set_node_attribute(node_id, "st_layout", "Forward")
+    for node_id in reverse_node_id_list:
+            network.set_node_attribute(node_id, "st_layout", "Reverse")
+    overlap_node_id_list = list(set(forward_node_id_list).intersection(set(reverse_node_id_list)))
+    for node_id in overlap_node_id_list:
+        network.set_node_attribute(node_id, "st_layout", "Both")
+
+    print "computed node and edge sets"
+
+    source_ids=get_node_ids_by_names(network, source_names)
+    for node_id in source_ids:
+        network.set_node_attribute(node_id, "st_layout", "Target")
+    target_ids=get_node_ids_by_names(network, target_names)
+    for node_id in target_ids:
+        network.set_node_attribute(node_id, "st_layout", "Source")
+
+    reduce_network_by_ids(network, node_id_set, edge_id_set)
+
+    network.set_name(new_network_name)
+    print "path network ready "
+
+    forward.sort(key = lambda s: len(s))
+    reverse.sort(key = lambda s: len(s))
+    return {'forward': forward[:npaths], 'reverse': reverse[:npaths], 'network': network}
+
+
+# destructively modifies g
+def reduce_network_by_ids(g, node_id_set, edge_id_set):
+
+    g_node_id_set = set(g.nodes())
+    g_edge_id_list = []
+    for edge in g.edges(keys=True):
+        g_edge_id_list.append(edge[2])
+
+    g_edge_id_set = set(g_edge_id_list)
+
+    node_ids_to_remove = list(g_node_id_set.difference(node_id_set))
+    edge_ids_to_remove = list(g_edge_id_set.difference(edge_id_set))
+
+    for edge_id in edge_ids_to_remove:
+        g.remove_edge_by_id(edge_id)
+
+    for node_id in node_ids_to_remove:
+        g.remove_node(node_id)
+
+    print "removal done"
+
+def path_element_lists(g, paths):
+    node_list = []
+    edge_list = []
+    for path in paths:
+        add_path_elements(g, path, node_list, edge_list)
+    return list(set(node_list)), list(set(edge_list))
+
+def add_path_elements(g, path, node_list, edge_list):
+    node_list.extend(path)
+    for index in range(0, len(path)-1):
+        source_node_id = path[index]
+        target_node_id = path[index+1]
+        edge_ids =g.get_edge_ids_by_source_target(source_node_id, target_node_id)
+        edge_list.extend(edge_ids)
+
 
 #P1.write_to("/Users/dexter/bad_network.cx")
 

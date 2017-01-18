@@ -19,14 +19,14 @@ class DirectedPaths:
 
         logging.info('DirectedPaths: Initialization complete')
 
-    def findPaths(self, network_id,source_list,target_list,ndex_server="http://public.ndexbio.org",
-                  rm_username="test",rm_password="test",npaths=20):
+    def findPaths(self, network_id, source_list, target_list, ndex_server="http://public.ndexbio.org",
+                  rm_username="test",rm_password="test",npaths=20, network_name="Directed Path Network"):
         print "in paths"
 
         G = NdexGraph(server=ndex_server, uuid=network_id, username=rm_username, password=rm_password)
 
         # Compute the source-target network
-        P1 = cu.get_source_target_network(G, source_list, target_list, "EGFR to MAP2K1, MAP2K2", npaths=npaths)
+        P1 = cu.get_source_target_network(G, source_list, target_list, network_name, npaths=npaths)
 
         # Apply a layout
         toolbox.apply_source_target_layout(P1.get('network'))

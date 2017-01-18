@@ -220,7 +220,6 @@ def add_edges(parent_term, network, term_id_to_node_id_map):
                 else:
                     edge_count = network.number_of_edges(child_node_id, parent_node_id)
                     if edge_count is 0:
-                        att = {"interaction": "hasParent"}
-                        network.add_edge_between(child_node_id, parent_node_id, att)
+                        network.add_edge_between(child_node_id, parent_node_id, "hasParent")
                         # print child_term.name + " -> " + parent_term.name
                     add_edges(child_term, network, term_id_to_node_id_map)

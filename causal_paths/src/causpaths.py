@@ -21,7 +21,7 @@ class DirectedPaths:
 
     def findPaths(self, network_id, source_list, target_list, ndex_server="http://public.ndexbio.org",
                   rm_username="test",rm_password="test",npaths=20, network_name="Directed Path Network"):
-        print "in paths"
+        #print "in paths"
 
         G = NdexGraph(server=ndex_server, uuid=network_id, username=rm_username, password=rm_password)
 
@@ -38,7 +38,7 @@ class DirectedPaths:
         return {'forward': P1.get('forward'), 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
 
     def findDirectedPaths(self, network_cx,source_list,target_list,npaths=20):
-        print "in paths"
+        #print "in paths"
 
         G = NdexGraph(cx=network_cx)
 
@@ -72,7 +72,7 @@ class DirectedPaths:
             #====================================
             for first, second in zip(f, f[1:]):
                 this_edge = G_prime.edge.get(first).get(second)
-                print G.get_edge_data(first,second)
+                #print G.get_edge_data(first,second)
 
                 if(this_edge is not None):
                     if(len(inner) < 1):

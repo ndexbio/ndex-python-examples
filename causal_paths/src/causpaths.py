@@ -59,8 +59,9 @@ class DirectedPaths:
         G_prime = P1.get('network')
 
         new_forward_list = self.label_node_list(F, G, G_prime)
+        new_reverse_list = self.label_node_list(R, G, G_prime)
 
-        return {'forward': P1.get('forward'), 'forward_english': new_forward_list, 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
+        return {'forward': P1.get('forward'), 'forward_english': new_forward_list, 'reverse_english': new_reverse_list, 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
 
     def label_node_list(self, n_list, G, G_prime):
         outer = []

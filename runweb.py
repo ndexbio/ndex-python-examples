@@ -42,14 +42,15 @@ def find_causal_path_directed(networkid):
 
 @api.post('/directedpath/query')
 def find_directed_path_directed2():
-    data = request.files.get('networkcx')
+    data = request.files.get('network_cx')
     query_string = dict(request.query)
     if data and data.file:
         #============================
         # VERIFY FILE CAN BE PARSED
         #============================
         try:
-            network = json.loads(data.file.read())
+            read_file = data.file.read()
+            network = json.loads(read_file)
         except Exception as e:
             response.status = 400
             response.content_type = 'application/json'

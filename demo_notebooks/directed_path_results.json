@@ -1,0 +1,284 @@
+{
+  "forward_english": [
+      [
+        "EGFR",
+        {
+          "1488": {
+            "polarity": "none",
+            "interaction": "Complex",
+            "INDRA statement": "Complex(EGFR(), PAK1())",
+            "Text": "In this study, we describe the specific interaction of PAK1 with the Grb2 adapter protein both in vitro and in vivo. We identify the site of this interaction as the second proline-rich SH3 binding domain of PAK1. Stimulation of the epidermal growth factor receptor (EGFR) in HaCaT cells enhances the level of EGFR-associated PAK1 and Grb2, although the PAK1-Grb2 association is itself independent of this stimulation. ",
+            "Belief score": "0.89",
+            "type": "Complex"
+          }
+        },
+        "PAK1",
+        {
+          "925": {
+            "INDRA statement": "Phosphorylation(PAK1(mods: (phosphorylation)), MAP2K1(), S, 298)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.79"
+          }
+        },
+        "MAP2K1"
+      ],
+      [
+        "EGFR",
+        {
+          "6404": {
+            "interaction": "Complex"
+          }
+        },
+        "ERRFI1",
+        {
+          "6353": {
+            "interaction": "Complex"
+          }
+        },
+        "BRAF",
+        {
+          "183": {
+            "INDRA statement": "Phosphorylation(BRAF(mods: (phosphorylation, T, 373)), MAP2K1(), S, 222)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.95"
+          },
+          "186": {
+            "INDRA statement": "Phosphorylation(BRAF(), MAP2K1(), S, 218)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.99"
+          },
+          "2236": {
+            "polarity": "positive",
+            "interaction": "Activation",
+            "INDRA statement": "Activation(BRAF(), kinase, MAP2K1(), kinase, True)",
+            "Text": "hKSR-2 selectively inhibited the Cot-mediated activation of MEK by  60%. In contrast, hKSR-2 up-regulated the Rafmediated MEK activation by up to 70%.",
+            "Belief score": "0.89",
+            "type": "Activation"
+          }
+        },
+        "MAP2K1"
+      ],
+      [
+        "EGFR",
+        {
+          "1488": {
+            "polarity": "none",
+            "interaction": "Complex",
+            "INDRA statement": "Complex(EGFR(), PAK1())",
+            "Text": "In this study, we describe the specific interaction of PAK1 with the Grb2 adapter protein both in vitro and in vivo. We identify the site of this interaction as the second proline-rich SH3 binding domain of PAK1. Stimulation of the epidermal growth factor receptor (EGFR) in HaCaT cells enhances the level of EGFR-associated PAK1 and Grb2, although the PAK1-Grb2 association is itself independent of this stimulation. ",
+            "Belief score": "0.89",
+            "type": "Complex"
+          }
+        },
+        "PAK1",
+        {
+          "929": {
+            "INDRA statement": "Phosphorylation(PAK1(), RAF1(), S, 338)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.79"
+          },
+          "931": {
+            "INDRA statement": "Phosphorylation(PAK1(), RAF1(), S, 339)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.79"
+          },
+          "6356": {
+            "interaction": "Complex"
+          }
+        },
+        "RAF1",
+        {
+          "1049": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, S, 471), (phosphorylation, T, 269), (phosphorylation, S, 296), (phosphorylation, S, 338), (phosphorylation, S, 301), (phosphorylation, S, 289)), MAP2K1(), S, 222)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.79"
+          },
+          "1054": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, S, 338)), MAP2K1(), S, 218)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.99"
+          },
+          "1059": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, T, 268), (phosphorylation, S, 621)), MAP2K1(), S, 222)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.99"
+          },
+          "1062": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, T, 268), (phosphorylation, S, 621)), MAP2K1(), T, 292)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.79"
+          },
+          "1065": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, T, 268), (phosphorylation, T, 269)), MAP2K1(), S, 222)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.99"
+          },
+          "1071": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, T, 268)), MAP2K1(), S, 218)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.98"
+          },
+          "1075": {
+            "INDRA statement": "Phosphorylation(RAF1(), MAP2K1(), S, 298)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.79"
+          },
+          "1686": {
+            "polarity": "none",
+            "interaction": "Complex",
+            "INDRA statement": "Complex(RAF1(), MAP2K1())",
+            "Text": "Summary: Raf-1 is a MAP kinase kinase kinase (MAP3K) which functions downstream of the Ras family of membrane associated GTPases to which it binds directly. Once activated Raf-1 can phosphorylate to activate the dual specificity protein kinases MEK1 and MEK2 which in turn phosphorylate to activate the serine/threonine specific protein kinases ERK1 and ERK2. Activated ERKs are pleiotropic effectors of cell physiology and play an important role in the control of gene expression involved in the cell division cycle, apoptosis, cell differentiation and cell migration.",
+            "Belief score": "0.98",
+            "type": "Complex"
+          },
+          "4810": {
+            "polarity": "positive",
+            "interaction": "Activation",
+            "INDRA statement": "Activation(RAF1(), kinase, MAP2K1(), kinase, True)",
+            "Text": "Here we describe a Raf-1-interacting protein, isolated using a yeast two-hybrid screen. This protein inhibits the phosphorylation and activation of MEK by Raf-1 and is designated RKIP (Raf kinase inhibitor protein).",
+            "Belief score": "0.99",
+            "type": "Activation"
+          }
+        },
+        "MAP2K1"
+      ],
+      [
+        "EGFR",
+        {
+          "1468": {
+            "polarity": "none",
+            "interaction": "Complex",
+            "INDRA statement": "Complex(EGFR(), SOS1(), GRB2())",
+            "Text": "In response to stimulation with epidermal growth factor (EGF), the guanine nucleotide exchange factor human SOS1 (hSOS1) promotes the activation of Ras by forming a complex with Grb2 and the human EGF receptor (hEGFR)",
+            "Belief score": "0.98",
+            "type": "Complex"
+          },
+          "6416": {
+            "interaction": "Complex"
+          }
+        },
+        "GRB2",
+        {
+          "6391": {
+            "interaction": "Complex"
+          }
+        },
+        "PAK1",
+        {
+          "925": {
+            "INDRA statement": "Phosphorylation(PAK1(mods: (phosphorylation)), MAP2K1(), S, 298)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.79"
+          }
+        },
+        "MAP2K1"
+      ],
+      [
+        "EGFR",
+        {
+          "1488": {
+            "polarity": "none",
+            "interaction": "Complex",
+            "INDRA statement": "Complex(EGFR(), PAK1())",
+            "Text": "In this study, we describe the specific interaction of PAK1 with the Grb2 adapter protein both in vitro and in vivo. We identify the site of this interaction as the second proline-rich SH3 binding domain of PAK1. Stimulation of the epidermal growth factor receptor (EGFR) in HaCaT cells enhances the level of EGFR-associated PAK1 and Grb2, although the PAK1-Grb2 association is itself independent of this stimulation. ",
+            "Belief score": "0.89",
+            "type": "Complex"
+          }
+        },
+        "PAK1",
+        {
+          "929": {
+            "INDRA statement": "Phosphorylation(PAK1(), RAF1(), S, 338)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.79"
+          },
+          "931": {
+            "INDRA statement": "Phosphorylation(PAK1(), RAF1(), S, 339)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.79"
+          },
+          "6356": {
+            "interaction": "Complex"
+          }
+        },
+        "RAF1",
+        {
+          "1048": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation), (phosphorylation), (phosphorylation)), MAP2K2())",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.95"
+          },
+          "1051": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, T, 269), (phosphorylation, S, 338)), MAP2K2(), S, 222)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.95"
+          },
+          "1056": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, S, 338)), MAP2K2(), S, 226)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.95"
+          },
+          "1063": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, T, 268), (phosphorylation, S, 621)), MAP2K2(), S, 222)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.79"
+          },
+          "1068": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, T, 268), (phosphorylation, T, 269)), MAP2K2(), S, 222)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.95"
+          },
+          "1073": {
+            "INDRA statement": "Phosphorylation(RAF1(mods: (phosphorylation, T, 268)), MAP2K2(), S, 226)",
+            "polarity": "positive",
+            "interaction": "Phosphorylation",
+            "type": "Modification",
+            "Belief score": "0.95"
+          }
+        },
+        "MAP2K2"
+      ]
+    ]
+
+
+}

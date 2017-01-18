@@ -2,9 +2,23 @@
 from ndex.networkn import NdexGraph
 import networkx as nx
 from itertools import islice,chain
+from networkx import NetworkXNoPath, NetworkXError, NetworkXNotImplemented
 
 def k_shortest_paths(G, source, target, k, weight=None):
-    return list(islice(nx.shortest_simple_paths(G, source, target, weight=weight), k))
+    try:
+        short_path = nx.shortest_simple_paths(G, source, target, weight=weight)
+        sliced_short_path = islice(short_path, k)
+        print sliced_short_path
+        return list(sliced_short_path)
+    except NetworkXNoPath:
+        print "no path"
+        return []
+    except NetworkXError:
+        print "networkx error"
+        return []
+    except NetworkXNotImplemented:
+        print "networkx not implemented"
+        return []
 
 def shortest_paths_csv(sp_list, netn_obj, fh, path_counter=0):
     for l in sp_list:
@@ -100,14 +114,16 @@ def network_from_paths(G, forward, reverse, sources, targets):
     for source in sources:
         M.node[source]['st_layout'] = 'Source'
     for target in targets:
-        M.node[target]['st_layout'] = 'Target'
-    add_edges_from_tuples(M, list(edge_tuples))
+        target_node = M.node.get(target)
+        if(target_node is not None):
+            M.node[target]['st_layout'] = 'Target'
+    add_edges_from_tuples(M, list(edge_tuples)) # TODO
     return M
 
 def add_path(network, old_network, path, label, edge_tuples, conflict_label='Both'):
     add_path_nodes(network, old_network, path, label, conflict_label)
     for index in range(0, len(path)-1):
-        tuple=(path[index],path[index+1])
+        tuple=(path[index],path[index+1]) #TODO add edgeAttr
         edge_tuples.add(tuple)
 
 def add_path_nodes(network, old_network, path, label, conflict_label):
@@ -123,6 +139,8 @@ def add_path_nodes(network, old_network, path, label, conflict_label):
 def add_edges_from_tuples(network, tuples):
     for tuple in tuples:
         network.add_edge_between(tuple[0], tuple[1])
+        if(1 in tuple):
+            print tuple
 
 def get_node_ids_by_names(G, node_names):
     node_ids = set()
@@ -132,22 +150,20 @@ def get_node_ids_by_names(G, node_names):
     return list(node_ids)
 
 # get_source_target_network(G, ['MAP2K1'], ['MMP9'], "MAP2K1 to MMP9", npaths=20)
-def get_source_target_network(reference_network, source_names, target_names, new_network_name, npaths=20):
+def get_source_target_network(reference_network, source_names, target_names, new_network_name, npaths=20, r_types=None):
 
     # interpret INDRA statements into causal directed edges
     # needs to specify which edges must be doubled to provide both forward and reverse
-    two_way_edgetypes = ['Complex']
+    two_way_edgetypes = ['Complex'] #['in-complex-with']
     indra_causality(reference_network, two_way_edgetypes)
-
-    # forward and reverse direction paths for first pair of sources and targets
-    forward1 = k_shortest_paths_multi(reference_network, source_names, target_names, npaths)
-    reverse1 = k_shortest_paths_multi(reference_network, target_names, source_names, npaths)
+    #TODO filter edges based on relation type
 
     source_ids=get_node_ids_by_names(reference_network, source_names)
     target_ids=get_node_ids_by_names(reference_network, target_names)
 
-    #TODO sort paths by length
-
+    # forward and reverse direction paths for first pair of sources and targets
+    forward1 = k_shortest_paths_multi(reference_network, source_names, target_names, npaths)
+    reverse1 = k_shortest_paths_multi(reference_network, target_names, source_names, npaths)
 
     P1 = network_from_paths(reference_network, forward1, reverse1, source_ids, target_ids)
     P1.set_name(new_network_name)

@@ -8,7 +8,7 @@ def k_shortest_paths(G, source, target, k, weight=None):
     try:
         short_path = nx.shortest_simple_paths(G, source, target, weight=weight)
         sliced_short_path = islice(short_path, k)
-        print sliced_short_path
+        #print sliced_short_path
         return list(sliced_short_path)
     except NetworkXNoPath:
         print "no path"
@@ -78,6 +78,12 @@ def indra_causality(netn_obj,two_way_edgetypes):
     for e2 in add_reverse_edges:
         netn_obj.add_edge_between(e2[1],e2[0],interaction=e2[2])
 
+def filter_edges(netn_obj,relation_types):
+    for e in netn_obj.edges_iter(data='interaction', keys=True):
+        if e[3] not in relation_types:
+            netn_obj.remove_edge_by_id(e[2])
+            #print "removing edge %s" % e[3] #.add_edge_between(e2[1],e2[0],interaction=e2[2])
+
 # def cl_develops_from(netn_obj,two_way_edgetypes=[]):
 #     #Function for expanding cell ontology networks to causal nets.  This involves handling edge types where causality could go both ways
 #     add_reverse_edges=[]
@@ -95,6 +101,7 @@ def k_shortest_paths_multi(G, source_names, target_names, npaths=20):
     # targets_ids= list(chain(*targets_list))
     source_ids = get_node_ids_by_names(G,source_names)
     target_ids = get_node_ids_by_names(G,target_names)
+
     g=nx.DiGraph(G)
     all_shortest_paths = []
     for s in source_ids:
@@ -117,7 +124,9 @@ def network_from_paths(G, forward, reverse, sources, targets):
     for path in reverse:
         add_path(M, G, path, 'Reverse', edge_tuples)
     for source in sources:
-        M.node[source]['st_layout'] = 'Source'
+        source_node = M.node.get(source)
+        if(source_node is not None):
+            M.node[source]['st_layout'] = 'Source'
     for target in targets:
         target_node = M.node.get(target)
         if(target_node is not None):
@@ -155,11 +164,19 @@ def get_node_ids_by_names(G, node_names):
     return list(node_ids)
 
 # get_source_target_network(G, ['MAP2K1'], ['MMP9'], "MAP2K1 to MMP9", npaths=20)
-def get_source_target_network(reference_network, source_names, target_names, new_network_name, npaths=20, r_types=None):
+def get_source_target_network(reference_network, source_names, target_names, new_network_name, npaths=20, relation_type=None):
 
     # interpret INDRA statements into causal directed edges
     # needs to specify which edges must be doubled to provide both forward and reverse
     two_way_edgetypes = ['Complex'] #['in-complex-with']
+
+    #=====================================================================
+    # Filter edges by type.  The following call to indra_causality() will
+    # only contain filtered edges and may not add any reverse edges
+    #=====================================================================
+    if relation_type is not None:
+        filter_edges(reference_network, relation_type)
+
     indra_causality(reference_network, two_way_edgetypes)
     #TODO filter edges based on relation type
 
@@ -172,7 +189,7 @@ def get_source_target_network(reference_network, source_names, target_names, new
 
     P1 = network_from_paths(reference_network, forward1, reverse1, source_ids, target_ids)
     P1.set_name(new_network_name)
-    print "Created " + P1.get_name()
+    #print "Created " + P1.get_name()
     forward1.sort(key = lambda s: len(s))
     reverse1.sort(key = lambda s: len(s))
     return {'forward': forward1[:npaths], 'reverse': reverse1[:npaths], 'network': P1}

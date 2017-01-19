@@ -91,8 +91,16 @@ def find_directed_path_directed2():
                 pathnum = 20
 
         directedPaths = DirectedPaths()
-        if(pathnum is not None):
-            return dict(data=directedPaths.findDirectedPaths(network, source, target, npaths=pathnum))
+
+        return_paths = None
+
+        if('relationtypes' in query_string.keys() and len(query_string['relationtypes']) > 0):
+            relation_types = query_string['relationtypes'].split()
+            return_paths = directedPaths.findDirectedPaths(network, source, target, npaths=pathnum, relation_type=relation_types)
+        else:
+            return_paths = directedPaths.findDirectedPaths(network, source, target, npaths=pathnum)
+
+        return dict(data=return_paths)
 
 # run the web server
 def main():

@@ -73,13 +73,19 @@ class DirectedPaths:
             #====================================
             for first, second in zip(f, f[1:]):
                 this_edge = G_prime.edge.get(first).get(second)
-                #print G.get_edge_data(first,second)
+
+                tmp_edge_list = []
 
                 if(this_edge is not None):
                     if(len(inner) < 1):
                         inner.append(G_prime.node.get(first).get('name'))
 
-                    inner.append(G.get_edge_data(first,second))
+                    inner_edge = G.get_edge_data(first,second)
+
+                    for k in inner_edge.keys():
+                        tmp_edge_list.append(inner_edge[k])
+
+                    inner.append(tmp_edge_list)
                     inner.append(G_prime.node.get(second).get('name'))
 
             outer.append(inner)

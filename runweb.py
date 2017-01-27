@@ -23,7 +23,7 @@ root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 def index(name):
     return template('<b>Hello {{name}}</b>!', name=name)
 
-@api.get('/causalpath/<networkid>/query')
+@api.get('/directedpath/<networkid>/query')
 def find_causal_path_directed(networkid):
     request_body = request.json
     query_string = dict(request.query)

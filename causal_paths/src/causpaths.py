@@ -19,6 +19,8 @@ class DirectedPaths:
 
         logging.info('DirectedPaths: Initialization complete')
 
+        self.ref_networks = {}
+
     def findPaths(self, network_id, source_list, target_list, ndex_server="http://public.ndexbio.org",
                   rm_username="test",rm_password="test",npaths=20, network_name="Directed Path Network"):
         #print "in paths"
@@ -40,7 +42,8 @@ class DirectedPaths:
     def findDirectedPaths(self, network_cx,source_list, target_list, uuid=None, server=None, npaths=20, relation_type=None):
         #print "in paths"
         if(uuid is not None):
-            G = NdexGraph(server=server, uuid=uuid)
+            #G = NdexGraph(server=server, uuid=uuid)
+            G = self.get_reference_network(uuid, server)
         else:
             G = NdexGraph(cx=network_cx)
 
@@ -64,6 +67,13 @@ class DirectedPaths:
         new_reverse_list = self.label_node_list(R, G, G_prime)
 
         return {'forward': P1.get('forward'), 'forward_english': new_forward_list, 'reverse_english': new_reverse_list, 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
+
+    def get_reference_network(self, uuid, host):
+        if self.ref_networks.get(uuid) is None:
+            G = NdexGraph(server=host, uuid=uuid)
+            self.ref_networks[uuid] = G
+
+        return self.ref_networks.get(uuid)
 
     def label_node_list(self, n_list, G, G_prime):
         outer = []

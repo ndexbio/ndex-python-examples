@@ -18,6 +18,7 @@ api = Bottle()
 log = logs.get_logger('api')
 
 root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+directedPaths = DirectedPaths()
 
 @api.get('/hello/<name>')
 def index(name):
@@ -111,7 +112,7 @@ def find_directed_path_directed2():
     else:
             pathnum = 20
 
-    directedPaths = DirectedPaths()
+    #directedPaths = DirectedPaths()
 
     return_paths = None
 

@@ -42,65 +42,83 @@ def find_causal_path_directed(networkid):
 
 @api.post('/directedpath/query')
 def find_directed_path_directed2():
+    uuid = None
+    server = None
+    network = None
     data = request.files.get('network_cx')
     query_string = dict(request.query)
-    if data and data.file:
-        #============================
-        # VERIFY FILE CAN BE PARSED
-        #============================
-        try:
-            read_file = data.file.read()
-            network = json.loads(read_file)
-        except Exception as e:
-            response.status = 400
-            response.content_type = 'application/json'
-            return json.dumps({'message': 'Network file is not valid CX/JSON. Error --> ' + e.message})
 
-        #==================================
-        # VERIFY SOURCE NODES ARE PRESENT
-        #==================================
-        if('source' in query_string.keys() and len(query_string['source']) > 0):
-            source = query_string['source'].split()
+    #============================
+    # VERIFY FILE CAN BE PARSED
+    # OR UUID IS SUPPLIED
+    #============================
+    if('uuid' in query_string.keys() and len(query_string['uuid']) > 0):
+        if('server' in query_string.keys() and len(query_string['server']) > 0):
+            server = "http://" + query_string['server']
+            uuid = query_string['uuid']
         else:
             response.status = 400
             response.content_type = 'application/json'
-            return json.dumps({'message': 'Missing source list in query string. Example: /query?source=EGFR&target=MAP2K1 MAP2K2&pathnum=5'})
-            #raise KeyError("missing source list")
-
-        #==================================
-        # VERIFY TARGET NODES ARE PRESENT
-        #==================================
-        if('target' in query_string.keys() and len(query_string['target']) > 0):
-            target = query_string['target'].split()
+            return json.dumps({'message': 'Server must be supplied if UUID is used'})
+    else:
+        if data and data.file:
+            try:
+                read_file = data.file.read()
+                network = json.loads(read_file)
+            except Exception as e:
+                response.status = 400
+                response.content_type = 'application/json'
+                return json.dumps({'message': 'Network file is not valid CX/JSON. Error --> ' + e.message})
         else:
             response.status = 400
             response.content_type = 'application/json'
-            return json.dumps({'message': 'Missing target list in query string. Example: /query?source=EGFR&target=MAP2K1 MAP2K2&pathnum=5'})
-            #raise KeyError("missing target list")
+            return json.dumps({'message': 'Valid CX/JSON file not found and uuid not supplied.'})
 
-        #=================
-        # PARSE N TO INT
-        #=================
-        pathnum = query_string.get('pathnum')
-        if(pathnum is not None):
-            if pathnum.isdigit():
-                pathnum = int(pathnum, 10)
-            else:
-                pathnum = 20
+    #==================================
+    # VERIFY SOURCE NODES ARE PRESENT
+    #==================================
+    if('source' in query_string.keys() and len(query_string['source']) > 0):
+        source = query_string['source'].split(",")
+    else:
+        response.status = 400
+        response.content_type = 'application/json'
+        return json.dumps({'message': 'Missing source list in query string. Example: /query?source=EGFR&target=MAP2K1 MAP2K2&pathnum=5'})
+        #raise KeyError("missing source list")
+
+    #==================================
+    # VERIFY TARGET NODES ARE PRESENT
+    #==================================
+    if('target' in query_string.keys() and len(query_string['target']) > 0):
+        target = query_string['target'].split(",")
+    else:
+        response.status = 400
+        response.content_type = 'application/json'
+        return json.dumps({'message': 'Missing target list in query string. Example: /query?source=EGFR&target=MAP2K1 MAP2K2&pathnum=5'})
+        #raise KeyError("missing target list")
+
+    #=================
+    # PARSE N TO INT
+    #=================
+    pathnum = query_string.get('pathnum')
+    if(pathnum is not None):
+        if pathnum.isdigit():
+            pathnum = int(pathnum, 10)
         else:
-                pathnum = 20
+            pathnum = 20
+    else:
+            pathnum = 20
 
-        directedPaths = DirectedPaths()
+    directedPaths = DirectedPaths()
 
-        return_paths = None
+    return_paths = None
 
-        if('relationtypes' in query_string.keys() and len(query_string['relationtypes']) > 0):
-            relation_types = query_string['relationtypes'].split()
-            return_paths = directedPaths.findDirectedPaths(network, source, target, npaths=pathnum, relation_type=relation_types)
-        else:
-            return_paths = directedPaths.findDirectedPaths(network, source, target, npaths=pathnum)
+    if('relationtypes' in query_string.keys() and len(query_string['relationtypes']) > 0):
+        relation_types = query_string['relationtypes'].split()
+        return_paths = directedPaths.findDirectedPaths(network, source, target, uuid=uuid, server=server, npaths=pathnum, relation_type=relation_types)
+    else:
+        return_paths = directedPaths.findDirectedPaths(network, source, target, uuid=uuid, server=server, npaths=pathnum)
 
-        return dict(data=return_paths)
+    return dict(data=return_paths)
 
 # run the web server
 def main():

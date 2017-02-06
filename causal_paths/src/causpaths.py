@@ -37,10 +37,12 @@ class DirectedPaths:
 
         return {'forward': P1.get('forward'), 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
 
-    def findDirectedPaths(self, network_cx,source_list, target_list, npaths=20, relation_type=None):
+    def findDirectedPaths(self, network_cx,source_list, target_list, uuid=None, server=None, npaths=20, relation_type=None):
         #print "in paths"
-
-        G = NdexGraph(cx=network_cx)
+        if(uuid is not None):
+            G = NdexGraph(server=server, uuid=uuid)
+        else:
+            G = NdexGraph(cx=network_cx)
 
         # Compute the source-target network
         P1 = cu.get_source_target_network(G, source_list, target_list, "Title placeholder", npaths=npaths, relation_type=relation_type)

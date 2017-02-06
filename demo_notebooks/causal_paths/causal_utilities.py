@@ -72,6 +72,8 @@ def sources_to_targets_dict(sources,targets,netn_obj,npaths=1):
 def indra_causality(netn_obj,two_way_edgetypes):
     #Function for expanding INDRA networks to causal nets.  This involves handling edge types where causality could go both ways
     add_reverse_edges=[]
+    for e1 in netn_obj.edges_iter():
+        mystr = e1
     for e in netn_obj.edges_iter(data='interaction'):
         if e[2] in two_way_edgetypes:
             add_reverse_edges.append(e)
@@ -164,11 +166,11 @@ def get_node_ids_by_names(G, node_names):
     return list(node_ids)
 
 # get_source_target_network(G, ['MAP2K1'], ['MMP9'], "MAP2K1 to MMP9", npaths=20)
-def get_source_target_network(reference_network, source_names, target_names, new_network_name, npaths=20, relation_type=None):
+def get_source_target_network(reference_network, source_names, target_names, new_network_name, npaths=20, relation_type=None, uuids=None):
 
     # interpret INDRA statements into causal directed edges
     # needs to specify which edges must be doubled to provide both forward and reverse
-    two_way_edgetypes = ['Complex'] #['in-complex-with']
+    two_way_edgetypes = ['Complex', 'Activation', 'in-complex-with']
 
     #=====================================================================
     # Filter edges by type.  The following call to indra_causality() will

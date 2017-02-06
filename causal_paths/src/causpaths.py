@@ -72,6 +72,8 @@ class DirectedPaths:
         if self.ref_networks.get(uuid) is None:
             G = NdexGraph(server=host, uuid=uuid)
             self.ref_networks[uuid] = G
+        else:
+            print "INFO: using cached network."
 
         return self.ref_networks.get(uuid)
 

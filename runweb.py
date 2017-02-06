@@ -54,7 +54,10 @@ def find_directed_path_directed2():
     #============================
     if('uuid' in query_string.keys() and len(query_string['uuid']) > 0):
         if('server' in query_string.keys() and len(query_string['server']) > 0):
-            server = "http://" + query_string['server']
+            server = query_string['server']
+            if("http" not in server):
+                server = "http://" + query_string['server']
+
             uuid = query_string['uuid']
         else:
             response.status = 400

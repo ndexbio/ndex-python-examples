@@ -45,7 +45,10 @@ class DirectedPaths:
             #G = NdexGraph(server=server, uuid=uuid)
             G = self.get_reference_network(uuid, server)
         else:
-            G = NdexGraph(cx=network_cx)
+            if type(network_cx) is NdexGraph:
+                G = network_cx
+            else:
+                G = NdexGraph(cx=network_cx)
 
         # Compute the source-target network
         P1 = cu.get_source_target_network(G, source_list, target_list, "Title placeholder", npaths=npaths, relation_type=relation_type)
@@ -65,6 +68,8 @@ class DirectedPaths:
 
         new_forward_list = self.label_node_list(F, G, G_prime)
         new_reverse_list = self.label_node_list(R, G, G_prime)
+
+        G = None
 
         return {'forward': P1.get('forward'), 'forward_english': new_forward_list, 'reverse_english': new_reverse_list, 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
 

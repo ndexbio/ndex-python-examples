@@ -11,6 +11,8 @@ from causal_paths.src.causpaths import DirectedPaths
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 import logs
+from ndex.networkn import NdexGraph
+import copy
 
 #bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024
 api = Bottle()
@@ -18,7 +20,7 @@ api = Bottle()
 log = logs.get_logger('api')
 
 root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-directedPaths = DirectedPaths()
+ref_networks = {}
 
 @api.get('/hello/<name>')
 def index(name):
@@ -60,6 +62,10 @@ def find_directed_path_directed2():
                 server = "http://" + query_string['server']
 
             uuid = query_string['uuid']
+
+            network = get_reference_network(uuid, server)
+            uuid = None
+
         else:
             response.status = 400
             response.content_type = 'application/json'
@@ -112,7 +118,7 @@ def find_directed_path_directed2():
     else:
             pathnum = 20
 
-    #directedPaths = DirectedPaths()
+    directedPaths = DirectedPaths()
 
     return_paths = None
 
@@ -121,8 +127,17 @@ def find_directed_path_directed2():
         return_paths = directedPaths.findDirectedPaths(network, source, target, uuid=uuid, server=server, npaths=pathnum, relation_type=relation_types)
     else:
         return_paths = directedPaths.findDirectedPaths(network, source, target, uuid=uuid, server=server, npaths=pathnum)
-
+    directedPaths = None
     return dict(data=return_paths)
+
+def get_reference_network(uuid, host):
+    if ref_networks.get(uuid) is None:
+        G = NdexGraph(server=host, uuid=uuid)
+        ref_networks[uuid] = G
+    else:
+        print "INFO: using cached network."
+
+    return copy.deepcopy(ref_networks.get(uuid))
 
 # run the web server
 def main():

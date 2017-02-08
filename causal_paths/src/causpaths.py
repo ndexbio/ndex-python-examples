@@ -9,6 +9,7 @@ import logging
 #import networkx as nx
 from ndex.networkn import NdexGraph
 import ndex.beta.toolbox as toolbox
+from ndex.beta import layouts
 import demo_notebooks.causal_paths.causal_utilities as cu
 
 
@@ -57,8 +58,11 @@ class DirectedPaths:
         #toolbox.apply_source_target_layout(P1.get('network'))
 
         # Apply a cytoscape style from a template network
-        template_id = '4f53171c-600f-11e6-b0a6-06603eb7f303'
-        #toolbox.apply_template(P1.get('network'), template_id)
+        #template_id = '4f53171c-600f-11e6-b0a6-06603eb7f303'
+        template_id = '07762c7e-6193-11e5-8ac5-06603eb7f303' #  '67c3b75d-6191-11e5-8ac5-06603eb7f303'
+
+        toolbox.apply_template(P1.get('network'), template_id)
+        #layouts.apply_directed_flow_layout(P1.get('network'))
 
         #TODO: Process the forward and reverse lists.  Generate [{node1},{edge1},{node2},{edge2},etc...]
 
@@ -66,8 +70,8 @@ class DirectedPaths:
         R = P1.get('reverse')
         G_prime = P1.get('network')
 
-        new_forward_list = self.label_node_list(F, G, G_prime)
-        new_reverse_list = self.label_node_list(R, G, G_prime)
+        new_forward_list = self.label_node_list(F, G, G_prime)  # TODO check efficiency of this call
+        new_reverse_list = self.label_node_list(R, G, G_prime)  # TODO check efficiency of this call
 
         G = None
 
@@ -91,7 +95,10 @@ class DirectedPaths:
             # the edge between the nodes
             #====================================
             for first, second in zip(f, f[1:]):
-                this_edge = G_prime.edge.get(first).get(second)
+                if G_prime.edge.get(first) is not None:
+                    this_edge = G_prime.edge.get(first).get(second)
+                else:
+                    this_edge = None
 
                 tmp_edge_list = []
 

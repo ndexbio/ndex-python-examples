@@ -118,13 +118,14 @@ def k_shortest_paths_multi(G, source_names, target_names, npaths=20):
 
     return all_shortest_paths
 
-def network_from_paths(G, forward, reverse, sources, targets):
+def network_from_paths(G, forward, reverse, sources, targets, include_reverse=False):
     M = NdexGraph()
     edge_tuples=set()
     for path in forward:
         add_path(M, G, path, 'Forward', edge_tuples)
-    for path in reverse:
-        add_path(M, G, path, 'Reverse', edge_tuples)
+    if include_reverse:
+        for path in reverse:
+            add_path(M, G, path, 'Reverse', edge_tuples)
     for source in sources:
         source_node = M.node.get(source)
         if(source_node is not None):
@@ -189,7 +190,7 @@ def get_source_target_network(reference_network, source_names, target_names, new
     forward1 = k_shortest_paths_multi(reference_network, source_names, target_names, npaths)
     reverse1 = k_shortest_paths_multi(reference_network, target_names, source_names, npaths)
 
-    P1 = network_from_paths(reference_network, forward1, reverse1, source_ids, target_ids)
+    P1 = network_from_paths(reference_network, forward1, reverse1, source_ids, target_ids, include_reverse=False)  # TODO check efficiency of
     P1.set_name(new_network_name)
     #print "Created " + P1.get_name()
     forward1.sort(key = lambda s: len(s))

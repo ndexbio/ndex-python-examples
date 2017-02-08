@@ -62,7 +62,7 @@ setup(
         'ndex',
         'bottle',
         'gevent',
-        'gevent-websocket',
+        'gevent_websocket',
         'networkx'
     ],
 

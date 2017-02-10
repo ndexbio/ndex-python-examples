@@ -65,7 +65,6 @@ def find_directed_path_directed2():
 
             network = get_reference_network(uuid, server)
             uuid = None
-
         else:
             response.status = 400
             response.content_type = 'application/json'

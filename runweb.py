@@ -65,7 +65,6 @@ def find_directed_path_directed2():
 
             network = get_reference_network(uuid, server)
             uuid = None
-
         else:
             response.status = 400
             response.content_type = 'application/json'
@@ -131,6 +130,68 @@ def find_directed_path_directed2():
     result = dict(data=return_paths)
     return result
 
+
+
+@api.post('/directedpath/batch/query')
+def find_directed_path_directed_batch():
+    uuid = None
+    server = None
+    network = None
+    data = request.files.get('network_cx')
+    query_string = dict(request.query)
+
+    #============================
+    # VERIFY FILE CAN BE PARSED
+    # OR UUID IS SUPPLIED
+    #============================
+    if('uuid' in query_string.keys() and len(query_string['uuid']) > 0):
+        if('server' in query_string.keys() and len(query_string['server']) > 0):
+            server = query_string['server']
+            if("http" not in server):
+                server = "http://" + query_string['server']
+
+            uuid = query_string['uuid']
+
+            network = get_reference_network(uuid, server)
+            uuid = None
+        else:
+            response.status = 400
+            response.content_type = 'application/json'
+            return json.dumps({'message': 'Server must be supplied if UUID is used'})
+    else:
+        if data and data.file:
+            try:
+                read_file = data.file.read()
+                network = json.loads(read_file)
+            except Exception as e:
+                response.status = 400
+                response.content_type = 'application/json'
+                return json.dumps({'message': 'Network file is not valid CX/JSON. Error --> ' + e.message})
+        else:
+            response.status = 400
+            response.content_type = 'application/json'
+            return json.dumps({'message': 'Valid CX/JSON file not found and uuid not supplied.'})
+
+    #==================================
+    # VERIFY SOURCE NODES ARE PRESENT
+    #==================================
+    if('sourcetarget' in query_string.keys() and len(query_string['sourcetarget']) > 0):
+        sourcetarget = query_string['sourcetarget'].split(",")
+    else:
+        response.status = 400
+        response.content_type = 'application/json'
+        return json.dumps({'message': 'Missing source list in query string. Example: /query?source=EGFR&target=MAP2K1 MAP2K2&pathnum=5'})
+        #raise KeyError("missing source list")
+
+    directedPaths = DirectedPaths()
+
+    source_target = [
+        {"id": "1234", "source": ["KSR1"], "targets": [["MARK2"], ["MARK3"], ["LIMA1"], ["STAT1"], ["Cyclin"], ["PRSS27"], ["PRKCG"], ["ITGAV"], ["ITGB3"], ["ERG"], ["EIF2AK3"]]}
+    ]
+
+    return_paths = directedPaths.findDirectedPathsBatch(network, source_target, npaths=50)
+
+    return dict(data=return_paths)
 
 def get_reference_network(uuid, host):
     if ref_networks.get(uuid) is None:

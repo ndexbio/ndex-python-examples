@@ -197,6 +197,93 @@ def get_source_target_network(reference_network, source_names, target_names, new
     reverse1.sort(key = lambda s: len(s))
     return {'forward': forward1[:npaths], 'reverse': reverse1[:npaths], 'network': P1}
 
+def get_source_target_network_batch(reference_network, source_target_names, new_network_name, npaths=20, relation_type=None, uuids=None):
+
+    # interpret INDRA statements into causal directed edges
+    # needs to specify which edges must be doubled to provide both forward and reverse
+    two_way_edgetypes = ['Complex', 'Activation', 'in-complex-with']
+
+    #=====================================================================
+    # Filter edges by type.  The following call to indra_causality() will
+    # only contain filtered edges and may not add any reverse edges
+    #=====================================================================
+    if relation_type is not None:
+        filter_edges(reference_network, relation_type)
+
+    indra_causality(reference_network, two_way_edgetypes)
+    #TODO filter edges based on relation type
+
+    return_matrix = []
+
+    g=nx.DiGraph(reference_network)
+    for st in source_target_names:
+        s = st.get("source")
+        targets = st.get("targets")
+
+        for t in targets:
+            print "processing %s %s" % (s, t)
+            source_ids=get_node_ids_by_names(reference_network, s)
+            target_ids=get_node_ids_by_names(reference_network, t)
+
+            # forward and reverse direction paths for first pair of sources and targets
+            #forward1 = k_shortest_paths_multi(reference_network, s, t, npaths)
+
+            forward1 = []
+            for s_id in source_ids:
+                for t_id in target_ids:
+                    try:
+                        sp_list=k_shortest_paths(g,s_id,t_id,npaths)
+                        for path in sp_list:
+                            forward1.append(path)
+                    except Exception as inst:
+                        print "exception in shortest paths: " + str(inst)
+
+            reverse1 = []  # k_shortest_paths_multi(reference_network, s, t, npaths)
+
+            P1 = network_from_paths(reference_network, forward1, reverse1, source_ids, target_ids, include_reverse=False)  # TODO check efficiency of
+            P1.set_name(new_network_name)
+            #print "Created " + P1.get_name()
+            forward1.sort(key = lambda s: len(s))
+            #reverse1.sort(key = lambda s: len(s))
+
+            forward_english = label_node_list(forward1, reference_network, P1)
+
+            return_matrix.append({'forward': forward1[:npaths], 'reverse': reverse1[:npaths], "forward_english": forward_english})
+
+    return return_matrix
+
+def label_node_list(n_list, G, G_prime):
+    outer = []
+    for f in n_list:
+        inner = []
+        #====================================
+        # Take an array of nodes and fill in
+        # the edge between the nodes
+        #====================================
+        for first, second in zip(f, f[1:]):
+            if G_prime.edge.get(first) is not None:
+                this_edge = G_prime.edge.get(first).get(second)
+            else:
+                this_edge = None
+
+            tmp_edge_list = []
+
+            if(this_edge is not None):
+                if(len(inner) < 1):
+                    inner.append(G_prime.node.get(first).get('name'))
+
+                inner_edge = G.get_edge_data(first,second)
+
+                for k in inner_edge.keys():
+                    tmp_edge_list.append(inner_edge[k])
+
+                inner.append(tmp_edge_list)
+                inner.append(G_prime.node.get(second).get('name'))
+
+        outer.append(inner)
+
+    return outer
+
 def get_source_target_network_new (network, source_names, target_names, new_network_name, npaths=20, direction='all'):
     # forward and reverse direction paths for first pair of sources and targets
     forward = []

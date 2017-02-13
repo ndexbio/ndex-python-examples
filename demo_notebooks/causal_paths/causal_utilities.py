@@ -166,6 +166,46 @@ def get_node_ids_by_names(G, node_names):
             node_ids.add(id)
     return list(node_ids)
 
+# get_source_target_paths(G, ['MAP2K1'], ['MMP9'], npaths=20)
+def get_source_target_paths(reference_network, source_names, target_names, npaths=20):
+
+    forward = k_shortest_paths_multi(reference_network, source_names, target_names, npaths)
+
+    forward_paths = node_id_lists_to_paths(forward, reference_network)
+
+    return forward_paths
+
+#====================================
+#
+# Take a path defined by a list of node ids and create
+# a path that alternates between node names and edges
+# where the edges are derived from the original network
+#
+#====================================
+def node_id_lists_to_paths(node_id_lists, G):
+    paths = []
+    for node_id_list in node_id_lists:
+        path = node_id_list_to_path(node_id_list, G)
+        paths.append(path)
+    return paths
+
+def node_id_list_to_path(node_id_list, G):
+    node_id_tuples = zip(node_id_list, node_id_list[1:])
+    path = []
+    first_id = node_id_list[0]
+    first_name = G.get_node_name_by_id(first_id)
+    path.append(first_name)
+
+    for source_id, target_id in node_id_tuples:
+        edge_data = G.get_edge_data(source_id,target_id)
+        path.append(edge_data)
+        target_name = G.get_node_name_by_id(target_id)
+        path.append(target_name)
+        #edge_ids = G.get_edge_ids_by_source_target(source_id, target_id)
+
+    return path
+
+
 # get_source_target_network(G, ['MAP2K1'], ['MMP9'], "MAP2K1 to MMP9", npaths=20)
 def get_source_target_network(reference_network, source_names, target_names, new_network_name, npaths=20, relation_type=None, uuids=None):
 
@@ -217,7 +257,7 @@ def get_source_target_network_batch(reference_network, source_target_names, new_
 
     g=nx.DiGraph(reference_network)
     for st in source_target_names:
-        s = st.get("source")
+        s = st.get("sources")
         targets = st.get("targets")
 
         for t in targets:

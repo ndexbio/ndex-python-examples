@@ -185,6 +185,7 @@ def find_directed_path_directed_batch():
 
     source_target = [
         {"id": "1234", "source": ["KSR1"], "targets": [["MARK2"], ["MARK3"], ["LIMA1"], ["STAT1"], ["Cyclin"], ["PRSS27"], ["PRKCG"], ["ITGAV"], ["ITGB3"], ["ERG"], ["EIF2AK3"]]}
+        #{"id": "1234", "source": ["AKT1", "AKT2", "AKT3"], "targets": [["MARK2"], ["MARK3"], ["LIMA1"], ["STAT1"], ["Cyclin"], ["PRSS27"], ["PRKCG"], ["ITGAV"], ["ITGB3"], ["ERG"], ["EIF2AK3"]]}
     ]
 
     return_paths = directedPaths.findDirectedPathsBatch(network, source_target, npaths=50)

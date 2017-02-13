@@ -8,11 +8,11 @@ import subprocess
 import os
 import sys
 from causal_paths.src.causpaths import DirectedPaths
+import demo_notebooks.causal_paths.causal_utilities as cu
 from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 import logs
 from ndex.networkn import NdexGraph
-import copy
 
 #bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024
 api = Bottle()
@@ -127,7 +127,9 @@ def find_directed_path_directed2():
     else:
         return_paths = directedPaths.findDirectedPaths(network, source, target, uuid=uuid, server=server, npaths=pathnum)
     directedPaths = None
-    return dict(data=return_paths)
+    result = dict(data=return_paths)
+    return result
+
 
 
 @api.post('/directedpath/batch/query')
@@ -195,11 +197,18 @@ def find_directed_path_directed_batch():
 def get_reference_network(uuid, host):
     if ref_networks.get(uuid) is None:
         G = NdexGraph(server=host, uuid=uuid)
+
+        # =====================================================================
+        # Filter edges by type.  The following call to indra_causality() will
+        # only contain filtered edges and may not add any reverse edges
+        # =====================================================================
+
+        cu.indra_causality(G, ['Complex', 'Activation', 'in-complex-with'])
+
         ref_networks[uuid] = G
     else:
         print "INFO: using cached network."
-
-    return copy.deepcopy(ref_networks.get(uuid))
+    return  ref_networks[uuid] #copy.deepcopy(ref_networks.get(uuid))
 
 # run the web server
 def main():

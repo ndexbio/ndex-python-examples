@@ -90,7 +90,13 @@ class PathScoring():
             if i % 2 != 0:  # Odd elements are edges
                 if len(multi_edges) > 0:
                     top_edge = None
-                    for edge in multi_edges:
+                    tmp_multi_edges = None
+                    if type(multi_edges) is dict:
+                        tmp_multi_edges = self.convert_edge_dict_to_array(multi_edges)
+                    else:
+                        tmp_multi_edges = multi_edges
+
+                    for edge in tmp_multi_edges:
                         if top_edge is None:
                             top_edge = edge
                         else:
@@ -102,8 +108,23 @@ class PathScoring():
                     #print multi_edges
                     #print edge_ranking.edge_type_rank[top_edge.get("interaction")]
 
-        print path_tuples
+        #print path_tuples
         return path_tuples
+
+    #==============================================
+    # helper function to convert the raw edge dict
+    # to an array which is the format used in
+    # path scoring
+    #==============================================
+    def convert_edge_dict_to_array(self, edge):
+        tmp_edge_list = []
+        for e in edge.keys():
+
+            tmp_edge_list.append(edge[e])
+
+        return tmp_edge_list
+
+
 
 class EdgeRanking:
     def __init__(self):

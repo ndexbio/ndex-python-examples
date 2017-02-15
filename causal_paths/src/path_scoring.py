@@ -156,7 +156,8 @@ class EdgeRanking:
             EdgeEnum.transcriptional_control: [  # 5
                 "controls-expression-of",
                 "Acetylation",
-                "Deacetylation"
+                "Deacetylation",
+                "Sumoylation"
             ],
             EdgeEnum.proteins_catalysis_lsmr: [  # 6
                 "catalysis-precedes"

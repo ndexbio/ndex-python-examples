@@ -138,7 +138,8 @@ class EdgeRanking:
                 "Dephosphorylation",
                 "controls-transport-of-chemical",
                 "consumption-controled-by",
-                "controls-production-of"
+                "controls-production-of",
+                "Ubiquitination"
             ],
             EdgeEnum.unspecified_activation_inhibition: [  # 2
                 "Activation",

@@ -139,7 +139,8 @@ class EdgeRanking:
                 "controls-transport-of-chemical",
                 "consumption-controled-by",
                 "controls-production-of",
-                "Ubiquitination"
+                "Ubiquitination",
+                "Deubiquitination"
             ],
             EdgeEnum.unspecified_activation_inhibition: [  # 2
                 "Activation",

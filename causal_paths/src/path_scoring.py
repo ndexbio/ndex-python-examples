@@ -154,7 +154,8 @@ class EdgeRanking:
                 "used-to-produce"
             ],
             EdgeEnum.transcriptional_control: [  # 5
-                "controls-expression-of"
+                "controls-expression-of",
+                "Acetylation"
             ],
             EdgeEnum.proteins_catalysis_lsmr: [  # 6
                 "catalysis-precedes"

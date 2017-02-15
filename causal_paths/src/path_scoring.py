@@ -158,7 +158,8 @@ class EdgeRanking:
                 "controls-expression-of",
                 "Acetylation",
                 "Deacetylation",
-                "Sumoylation"
+                "Sumoylation",
+                "Ribosylation"
             ],
             EdgeEnum.proteins_catalysis_lsmr: [  # 6
                 "catalysis-precedes"

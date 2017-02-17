@@ -11,6 +11,7 @@ from ndex.networkn import NdexGraph
 import ndex.beta.toolbox as toolbox
 from ndex.beta import layouts
 import demo_notebooks.causal_paths.causal_utilities as cu
+from copy import deepcopy
 
 
 class DirectedPaths:
@@ -44,7 +45,7 @@ class DirectedPaths:
         #print "in paths"
         if(uuid is not None):
             #G = NdexGraph(server=server, uuid=uuid)
-            G = self.get_reference_network(uuid, server)
+            G = deepcopy(self.get_reference_network(uuid, server))
         else:
             if type(network_cx) is NdexGraph:
                 G = network_cx

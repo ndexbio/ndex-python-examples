@@ -59,7 +59,7 @@ class DirectedPaths:
 
         # Apply a cytoscape style from a template network
         #template_id = '4f53171c-600f-11e6-b0a6-06603eb7f303'
-        template_id = '07762c7e-6193-11e5-8ac5-06603eb7f303' #  '67c3b75d-6191-11e5-8ac5-06603eb7f303'
+        template_id = '07762c7e-6193-11e5-8ac5-06603eb7f303'
 
         toolbox.apply_template(P1.get('network'), template_id)
         #layouts.apply_directed_flow_layout(P1.get('network'))

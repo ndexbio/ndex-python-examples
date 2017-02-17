@@ -45,7 +45,7 @@ class DirectedPaths:
         #print "in paths"
         if(uuid is not None):
             #G = NdexGraph(server=server, uuid=uuid)
-            G = deepcopy(self.get_reference_network(uuid, server))
+            G = self.get_reference_network(uuid, server)
         else:
             if type(network_cx) is NdexGraph:
                 G = network_cx
@@ -122,7 +122,7 @@ class DirectedPaths:
         else:
             print "INFO: using cached network."
 
-        return self.ref_networks.get(uuid)
+        return deepcopy(self.ref_networks.get(uuid))
 
     def label_node_list(self, n_list, G, G_prime):
         outer = []

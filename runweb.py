@@ -13,6 +13,7 @@ from gevent.pywsgi import WSGIServer
 from geventwebsocket.handler import WebSocketHandler
 import logs
 from ndex.networkn import NdexGraph
+from copy import deepcopy
 
 #bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024
 api = Bottle()
@@ -208,7 +209,8 @@ def get_reference_network(uuid, host):
         ref_networks[uuid] = G
     else:
         print "INFO: using cached network."
-    return  ref_networks[uuid] #copy.deepcopy(ref_networks.get(uuid))
+
+    return deepcopy(ref_networks.get(uuid))
 
 # run the web server
 def main():

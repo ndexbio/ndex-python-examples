@@ -44,7 +44,6 @@ class DirectedPaths:
     def findDirectedPaths(self, network_cx,source_list, target_list, uuid=None, server=None, npaths=20, relation_type=None):
         #print "in paths"
         if(uuid is not None):
-            #G = NdexGraph(server=server, uuid=uuid)
             G = self.get_reference_network(uuid, server)
         else:
             if type(network_cx) is NdexGraph:

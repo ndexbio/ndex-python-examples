@@ -11,7 +11,7 @@ def k_shortest_paths(G, source, target, k, weight=None):
         #print sliced_short_path
         return list(sliced_short_path)
     except NetworkXNoPath:
-        print "no path"
+        print "no path s: %s, t: %s" % (G.node.get(source)["name"], G.node.get(target)["name"])
         return []
     except NetworkXError:
         print "networkx error"
@@ -168,7 +168,6 @@ def get_node_ids_by_names(G, node_names):
 
 # get_source_target_paths(G, ['MAP2K1'], ['MMP9'], npaths=20)
 def get_source_target_paths(reference_network, source_names, target_names, npaths=20):
-
     forward = k_shortest_paths_multi(reference_network, source_names, target_names, npaths)
 
     forward_paths = node_id_lists_to_paths(forward, reference_network)
@@ -250,7 +249,7 @@ def get_source_target_network_batch(reference_network, source_target_names, new_
     if relation_type is not None:
         filter_edges(reference_network, relation_type)
 
-    #indra_causality(reference_network, two_way_edgetypes)
+    indra_causality(reference_network, two_way_edgetypes)
     #TODO filter edges based on relation type
 
     return_matrix = []

@@ -219,7 +219,7 @@ def get_source_target_network(reference_network, source_names, target_names, new
     if relation_type is not None:
         filter_edges(reference_network, relation_type)
 
-    indra_causality(reference_network, two_way_edgetypes)
+    #indra_causality(reference_network, two_way_edgetypes)
     #TODO filter edges based on relation type
 
     source_ids=get_node_ids_by_names(reference_network, source_names)

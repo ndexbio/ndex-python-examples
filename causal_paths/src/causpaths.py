@@ -12,7 +12,7 @@ import ndex.beta.toolbox as toolbox
 from ndex.beta import layouts
 import demo_notebooks.causal_paths.causal_utilities as cu
 from copy import deepcopy
-from ndex.beta.path_scoring import EdgeRanking
+#from ndex.beta.path_scoring import EdgeRanking
 
 
 class DirectedPaths:
@@ -140,41 +140,6 @@ class DirectedPaths:
 
         html_output += "</table class='table'></body></html>"
         print html_output
-
-    def get_best_edges_from_path(self, p):
-        edge_ranking = EdgeRanking()
-        best_path = []
-        total_score = 0
-        html_output = "<tr>"
-        for i, multi_edges in enumerate(p):
-            if i % 2 != 0:  # Odd elements are edges
-                if len(multi_edges) > 0:
-                    top_edge = None
-                    tmp_multi_edges = None
-                    if type(multi_edges) is dict:
-                        tmp_multi_edges = self.convert_edge_dict_to_array(multi_edges)
-                    else:
-                        tmp_multi_edges = multi_edges
-
-                    for edge in tmp_multi_edges:
-                        if top_edge is None:
-                            top_edge = edge
-                        else:
-                            if edge_ranking.edge_type_rank[edge.get("interaction")] < edge_ranking.edge_type_rank[top_edge.get("interaction")]:
-                                top_edge = edge
-
-                    print "top edge: "
-                    total_score = total_score + edge_ranking.edge_type_rank[top_edge.get("interaction")]
-                    html_output += "<td>" + top_edge.get("interaction") + "</td>"
-                    best_path.append(top_edge.get("interaction"))
-            else:
-                best_path.append(multi_edges)
-                html_output += " <td><span style='font-weight: bold'>" + multi_edges + "</span></td> "
-
-        html_output += "<td> %d </td></tr>" % total_score
-        #print html_output
-        return html_output
-
 
 
     def label_node_list(self, n_list, G, G_prime):

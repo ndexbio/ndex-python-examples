@@ -140,7 +140,8 @@ class EdgeRanking:
                 "consumption-controled-by",
                 "controls-production-of",
                 "Ubiquitination",
-                "Deubiquitination"
+                "Deubiquitination",
+                "ActivityActivity"
             ],
             EdgeEnum.unspecified_activation_inhibition: [  # 2
                 "Activation",
@@ -173,7 +174,8 @@ class EdgeRanking:
                 "interacts-with"
             ],
             EdgeEnum.unspecified_topological:[  # 9
-                "neighbor-of"
+                "neighbor-of",
+                "RasGef"
             ]
         }
 

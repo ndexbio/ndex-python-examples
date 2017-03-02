@@ -12,7 +12,7 @@ import ndex.beta.toolbox as toolbox
 from ndex.beta import layouts
 import demo_notebooks.causal_paths.causal_utilities as cu
 from copy import deepcopy
-#from ndex.beta.path_scoring import EdgeRanking
+from causal_paths.src.path_scoring import PathScoring, EdgeRanking
 
 
 class DirectedPaths:
@@ -72,12 +72,30 @@ class DirectedPaths:
         G_prime = P1.get('network')
 
         new_forward_list = self.label_node_list(F, G, G_prime)  # TODO check efficiency of this call
+
+        #==========================================
+        # Process the data from this network
+        #==========================================
+        results_list = []
+        try:
+
+            results_list = [f_e_i for f_e_i in new_forward_list if len(new_forward_list) > 0]
+
+        except Exception as e:
+            print "error ranking paths"
+            print e.message
+
+        path_scoring = PathScoring()
+
+        results_list_sorted = sorted(results_list,
+            lambda x,y: path_scoring.cross_country_scoring(x, y))
+
         new_reverse_list = self.label_node_list(R, G, G_prime)  # TODO check efficiency of this call
         subnet = self.get_subnet(F, G)
 
         G = None
 
-        return {'forward': P1.get('forward'), 'forward_english': new_forward_list, 'reverse_english': new_reverse_list, 'reverse': P1.get('reverse'), 'network': subnet.to_cx()} #P1.get('network').to_cx()}
+        return {'forward': P1.get('forward'), 'forward_english': results_list_sorted, 'reverse_english': new_reverse_list, 'reverse': P1.get('reverse'), 'network': subnet.to_cx()} #P1.get('network').to_cx()}
 
     def get_subnet(self, F, G):
         important_nodes = [item for sublist in F for item in sublist]
@@ -140,6 +158,41 @@ class DirectedPaths:
 
         html_output += "</table class='table'></body></html>"
         print html_output
+
+    def get_best_edges_from_path(self, p):
+        edge_ranking = EdgeRanking()
+        best_path = []
+        total_score = 0
+        html_output = "<tr>"
+        for i, multi_edges in enumerate(p):
+            if i % 2 != 0:  # Odd elements are edges
+                if len(multi_edges) > 0:
+                    top_edge = None
+                    tmp_multi_edges = None
+                    if type(multi_edges) is dict:
+                        tmp_multi_edges = self.convert_edge_dict_to_array(multi_edges)
+                    else:
+                        tmp_multi_edges = multi_edges
+
+                    for edge in tmp_multi_edges:
+                        if top_edge is None:
+                            top_edge = edge
+                        else:
+                            if edge_ranking.edge_type_rank[edge.get("interaction")] < edge_ranking.edge_type_rank[top_edge.get("interaction")]:
+                                top_edge = edge
+
+                    print "top edge: "
+                    total_score = total_score + edge_ranking.edge_type_rank[top_edge.get("interaction")]
+                    html_output += "<td>" + top_edge.get("interaction") + "</td>"
+                    best_path.append(top_edge.get("interaction"))
+            else:
+                best_path.append(multi_edges)
+                html_output += " <td><span style='font-weight: bold'>" + multi_edges + "</span></td> "
+
+        html_output += "<td> %d </td></tr>" % total_score
+        #print html_output
+        return html_output
+
 
 
     def label_node_list(self, n_list, G, G_prime):

@@ -187,7 +187,10 @@ class EdgeRanking:
 
         for key in self.edge_class_rank.keys():
             for et in self.edge_class_rank[key]:
-                self.edge_type_rank[et] = key.value
+                if type(key) is int:
+                    self.edge_type_rank[et] = key
+                else:
+                    self.edge_type_rank[et] = key.value
 
     def build_edge_type_list(self, edge_class_type_array):
         for ect in edge_class_type_array:

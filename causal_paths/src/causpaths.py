@@ -54,7 +54,7 @@ class DirectedPaths:
 
         self.original_edge_map = deepcopy(G.edge)
 
-        print self.original_edge_map
+        #print self.original_edge_map
 
         # Compute the source-target network
         P1 = cu.get_source_target_network(G, original_edge_map, source_list, target_list, "Title placeholder", npaths=npaths, relation_type=relation_type)

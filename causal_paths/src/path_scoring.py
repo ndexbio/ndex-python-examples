@@ -124,8 +124,6 @@ class PathScoring():
 
         return tmp_edge_list
 
-
-
 class EdgeRanking:
     def __init__(self):
         self.edge_types = []
@@ -141,7 +139,8 @@ class EdgeRanking:
                 "controls-production-of",
                 "Ubiquitination",
                 "Deubiquitination",
-                "ActivityActivity"
+                "ActivityActivity",
+                "RasGef"
             ],
             EdgeEnum.unspecified_activation_inhibition: [  # 2
                 "Activation",
@@ -174,8 +173,7 @@ class EdgeRanking:
                 "interacts-with"
             ],
             EdgeEnum.unspecified_topological:[  # 9
-                "neighbor-of",
-                "RasGef"
+                "neighbor-of"
             ]
         }
 

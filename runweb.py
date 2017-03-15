@@ -14,6 +14,7 @@ from geventwebsocket.handler import WebSocketHandler
 import logs
 from ndex.networkn import NdexGraph
 from copy import deepcopy
+from causal_paths import two_way_edges
 
 #bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024
 api = Bottle()
@@ -49,6 +50,7 @@ def find_directed_path_directed2():
     uuid = None
     server = None
     network = None
+    original_edge_map = None
     data = request.files.get('network_cx')
     query_string = dict(request.query)
 
@@ -64,7 +66,7 @@ def find_directed_path_directed2():
 
             uuid = query_string['uuid']
 
-            network = get_reference_network(uuid, server)
+            network, original_edge_map = get_reference_network(uuid, server)
             uuid = None
         else:
             response.status = 400
@@ -74,7 +76,8 @@ def find_directed_path_directed2():
         if data and data.file:
             try:
                 read_file = data.file.read()
-                network = json.loads(read_file)
+                network = NdexGraph(cx=json.loads(read_file))
+                original_edge_map = deepcopy(network.edge)
             except Exception as e:
                 response.status = 400
                 response.content_type = 'application/json'
@@ -124,9 +127,9 @@ def find_directed_path_directed2():
 
     if('relationtypes' in query_string.keys() and len(query_string['relationtypes']) > 0):
         relation_types = query_string['relationtypes'].split()
-        return_paths = directedPaths.findDirectedPaths(network, source, target, uuid=uuid, server=server, npaths=pathnum, relation_type=relation_types)
+        return_paths = directedPaths.findDirectedPaths(network, original_edge_map, source, target, uuid=uuid, server=server, npaths=pathnum, relation_type=relation_types)
     else:
-        return_paths = directedPaths.findDirectedPaths(network, source, target, uuid=uuid, server=server, npaths=pathnum)
+        return_paths = directedPaths.findDirectedPaths(network, original_edge_map, source, target, uuid=uuid, server=server, npaths=pathnum)
     directedPaths = None
     result = dict(data=return_paths)
     return result
@@ -138,6 +141,7 @@ def find_directed_path_directed_batch():
     uuid = None
     server = None
     network = None
+    original_edge_map = None
     data = request.files.get('network_cx')
     query_string = dict(request.query)
 
@@ -153,7 +157,7 @@ def find_directed_path_directed_batch():
 
             uuid = query_string['uuid']
 
-            network = get_reference_network(uuid, server)
+            network, original_edge_map = get_reference_network(uuid, server)
             uuid = None
         else:
             response.status = 400
@@ -163,7 +167,8 @@ def find_directed_path_directed_batch():
         if data and data.file:
             try:
                 read_file = data.file.read()
-                network = json.loads(read_file)
+                network = NdexGraph(cx=json.loads(read_file))
+                original_edge_map = deepcopy(network.edge)
             except Exception as e:
                 response.status = 400
                 response.content_type = 'application/json'
@@ -191,7 +196,7 @@ def find_directed_path_directed_batch():
         #{"id": "1234", "source": ["AKT1", "AKT2", "AKT3"], "targets": [["MARK2"], ["MARK3"], ["LIMA1"], ["STAT1"], ["Cyclin"], ["PRSS27"], ["PRKCG"], ["ITGAV"], ["ITGB3"], ["ERG"], ["EIF2AK3"]]}
     ]
 
-    return_paths = directedPaths.findDirectedPathsBatch(network, source_target, npaths=50)
+    return_paths = directedPaths.findDirectedPathsBatch(network, original_edge_map, source_target, npaths=50)
 
     return dict(data=return_paths)
 
@@ -204,13 +209,13 @@ def get_reference_network(uuid, host):
         # only contain filtered edges and may not add any reverse edges
         # =====================================================================
 
-        cu.indra_causality(G, ['Complex', 'Activation', 'in-complex-with'])
+        #cu.indra_causality(G, two_way_edges)
 
         ref_networks[uuid] = G
     else:
         print "INFO: using cached network."
 
-    return deepcopy(ref_networks.get(uuid))
+    return deepcopy(ref_networks.get(uuid)), ref_networks.get(uuid).edge
 
 # run the web server
 def main():

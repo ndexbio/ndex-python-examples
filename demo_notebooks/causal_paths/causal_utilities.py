@@ -3,6 +3,7 @@ from ndex.networkn import NdexGraph
 import networkx as nx
 from itertools import islice,chain
 from networkx import NetworkXNoPath, NetworkXError, NetworkXNotImplemented
+from causal_paths import two_way_edges
 
 def k_shortest_paths(G, source, target, k, weight=None):
     try:
@@ -118,8 +119,9 @@ def k_shortest_paths_multi(G, source_names, target_names, npaths=20):
 
     return all_shortest_paths
 
-def network_from_paths(G, forward, reverse, sources, targets, include_reverse=False):
+def network_from_paths(G, original_edge_map, forward, reverse, sources, targets, include_reverse=False):
     M = NdexGraph()
+    G.edge = original_edge_map
     edge_tuples=set()
     for path in forward:
         add_path(M, G, path, 'Forward', edge_tuples)
@@ -206,11 +208,11 @@ def node_id_list_to_path(node_id_list, G):
 
 
 # get_source_target_network(G, ['MAP2K1'], ['MMP9'], "MAP2K1 to MMP9", npaths=20)
-def get_source_target_network(reference_network, source_names, target_names, new_network_name, npaths=20, relation_type=None, uuids=None):
+def get_source_target_network(reference_network, original_edge_map, source_names, target_names, new_network_name, npaths=20, relation_type=None, uuids=None):
 
     # interpret INDRA statements into causal directed edges
     # needs to specify which edges must be doubled to provide both forward and reverse
-    two_way_edgetypes = ['Complex', 'Activation', 'in-complex-with']
+    two_way_edgetypes = ['Complex', 'in-complex-with']
 
     #=====================================================================
     # Filter edges by type.  The following call to indra_causality() will
@@ -229,7 +231,7 @@ def get_source_target_network(reference_network, source_names, target_names, new
     forward1 = k_shortest_paths_multi(reference_network, source_names, target_names, npaths)
     reverse1 = k_shortest_paths_multi(reference_network, target_names, source_names, npaths)
 
-    P1 = network_from_paths(reference_network, forward1, reverse1, source_ids, target_ids, include_reverse=False)  # TODO check efficiency of
+    P1 = network_from_paths(reference_network, original_edge_map, forward1, reverse1, source_ids, target_ids, include_reverse=False)  # TODO check efficiency of
     P1.set_name(new_network_name)
     #print "Created " + P1.get_name()
     forward1.sort(key = lambda s: len(s))
@@ -240,7 +242,6 @@ def get_source_target_network_batch(reference_network, source_target_names, new_
 
     # interpret INDRA statements into causal directed edges
     # needs to specify which edges must be doubled to provide both forward and reverse
-    two_way_edgetypes = ['Complex', 'Activation', 'in-complex-with']
 
     #=====================================================================
     # Filter edges by type.  The following call to indra_causality() will
@@ -249,7 +250,7 @@ def get_source_target_network_batch(reference_network, source_target_names, new_
     if relation_type is not None:
         filter_edges(reference_network, relation_type)
 
-    indra_causality(reference_network, two_way_edgetypes)
+    indra_causality(reference_network, two_way_edges)
     #TODO filter edges based on relation type
 
     return_matrix = []

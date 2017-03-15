@@ -42,7 +42,7 @@ class DirectedPaths:
 
         return {'forward': P1.get('forward'), 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
 
-    def findDirectedPaths(self, network_cx,source_list, target_list, uuid=None, server=None, npaths=20, relation_type=None):
+    def findDirectedPaths(self, network_cx, original_edge_map, source_list, target_list, uuid=None, server=None, npaths=20, relation_type=None):
         #print "in paths"
         if(uuid is not None):
             G = self.get_reference_network(uuid, server)
@@ -52,8 +52,12 @@ class DirectedPaths:
             else:
                 G = NdexGraph(cx=network_cx)
 
+        self.original_edge_map = deepcopy(G.edge)
+
+        print self.original_edge_map
+
         # Compute the source-target network
-        P1 = cu.get_source_target_network(G, source_list, target_list, "Title placeholder", npaths=npaths, relation_type=relation_type)
+        P1 = cu.get_source_target_network(G, original_edge_map, source_list, target_list, "Title placeholder", npaths=npaths, relation_type=relation_type)
 
         # Apply a layout
         #toolbox.apply_source_target_layout(P1.get('network'))
@@ -74,21 +78,18 @@ class DirectedPaths:
         new_forward_list = self.label_node_list(F, G, G_prime)  # TODO check efficiency of this call
 
         #==========================================
-        # Process the data from this network
+        # Rank the forward paths
         #==========================================
         results_list = []
         try:
-
             results_list = [f_e_i for f_e_i in new_forward_list if len(new_forward_list) > 0]
-
         except Exception as e:
             print "error ranking paths"
             print e.message
 
         path_scoring = PathScoring()
 
-        results_list_sorted = sorted(results_list,
-            lambda x,y: path_scoring.cross_country_scoring(x, y))
+        results_list_sorted = sorted(results_list, lambda x, y: path_scoring.cross_country_scoring(x, y))
 
         new_reverse_list = self.label_node_list(R, G, G_prime)  # TODO check efficiency of this call
         subnet = self.get_subnet(F, G)
@@ -103,7 +104,7 @@ class DirectedPaths:
         H = G.subgraph(important_nodes)
         return H
 
-    def findDirectedPathsBatch(self, network_cx, source_target_list, uuid=None, server=None, npaths=20, relation_type=None):
+    def findDirectedPathsBatch(self, network_cx, original_edge_map, source_target_list, uuid=None, server=None, npaths=20, relation_type=None):
         #print "in paths"
         if(uuid is not None):
             #G = NdexGraph(server=server, uuid=uuid)
@@ -115,7 +116,7 @@ class DirectedPaths:
                 G = NdexGraph(cx=network_cx)
 
         # Compute the source-target network
-        P1 = cu.get_source_target_network_batch(G, source_target_list, "Title placeholder", npaths=npaths, relation_type=relation_type)
+        P1 = cu.get_source_target_network_batch(G, original_edge_map, source_target_list, "Title placeholder", npaths=npaths, relation_type=relation_type)
 
         # Apply a layout
         #toolbox.apply_source_target_layout(P1.get('network'))

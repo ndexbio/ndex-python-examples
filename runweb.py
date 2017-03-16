@@ -46,7 +46,7 @@ def find_causal_path_directed(networkid):
     return dict(data=directedPaths.findPaths(networkid, source, target))
 
 @api.post('/directedpath/query')
-def find_directed_path_directed2():
+def find_directed_path_directed_post():
     uuid = None
     server = None
     network = None

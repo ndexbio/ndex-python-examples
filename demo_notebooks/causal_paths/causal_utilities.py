@@ -206,13 +206,13 @@ def node_id_list_to_path(node_id_list, G):
 
     return path
 
-
-# get_source_target_network(G, ['MAP2K1'], ['MMP9'], "MAP2K1 to MMP9", npaths=20)
 def get_source_target_network(reference_network, original_edge_map, source_names, target_names, new_network_name, npaths=20, relation_type=None, uuids=None):
-
-    # interpret INDRA statements into causal directed edges
-    # needs to specify which edges must be doubled to provide both forward and reverse
-    two_way_edgetypes = ['Complex', 'in-complex-with']
+    '''
+    interpret INDRA statements into causal directed edges
+    needs to specify which edges must be doubled to provide both forward and reverse
+    :return:
+    :rtype:
+    '''
 
     #=====================================================================
     # Filter edges by type.  The following call to indra_causality() will
@@ -233,10 +233,11 @@ def get_source_target_network(reference_network, original_edge_map, source_names
 
     P1 = network_from_paths(reference_network, original_edge_map, forward1, reverse1, source_ids, target_ids, include_reverse=False)  # TODO check efficiency of
     P1.set_name(new_network_name)
-    #print "Created " + P1.get_name()
+
     forward1.sort(key = lambda s: len(s))
     reverse1.sort(key = lambda s: len(s))
-    return {'forward': forward1[:npaths], 'reverse': reverse1[:npaths], 'network': P1}
+
+    return forward1[:npaths], reverse1[:npaths], P1
 
 def get_source_target_network_batch(reference_network, source_target_names, new_network_name, npaths=20, relation_type=None, uuids=None):
 

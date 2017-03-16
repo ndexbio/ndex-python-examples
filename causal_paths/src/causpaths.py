@@ -14,7 +14,6 @@ import demo_notebooks.causal_paths.causal_utilities as cu
 from copy import deepcopy
 from causal_paths.src.path_scoring import PathScoring, EdgeRanking
 
-
 class DirectedPaths:
 
     def __init__(self):
@@ -43,7 +42,6 @@ class DirectedPaths:
         return {'forward': P1.get('forward'), 'reverse': P1.get('reverse'), 'network': P1.get('network').to_cx()}
 
     def findDirectedPaths(self, network_cx, original_edge_map, source_list, target_list, uuid=None, server=None, npaths=20, relation_type=None):
-        #print "in paths"
         if(uuid is not None):
             G = self.get_reference_network(uuid, server)
         else:
@@ -54,54 +52,44 @@ class DirectedPaths:
 
         self.original_edge_map = deepcopy(G.edge)
 
-        #print self.original_edge_map
+        F, R, G_prime = cu.get_source_target_network(G, original_edge_map, source_list, target_list, "Title placeholder", npaths=npaths, relation_type=relation_type)
 
-        # Compute the source-target network
-        P1 = cu.get_source_target_network(G, original_edge_map, source_list, target_list, "Title placeholder", npaths=npaths, relation_type=relation_type)
+        complete_forward_list = self.reattach_edges(F, G, G_prime)  # TODO check efficiency of this call
+        complete_reverse_list = self.reattach_edges(R, G, G_prime)  # TODO check efficiency of this call
 
-        # Apply a layout
-        #toolbox.apply_source_target_layout(P1.get('network'))
-
-        # Apply a cytoscape style from a template network
-        #template_id = '4f53171c-600f-11e6-b0a6-06603eb7f303'
-        template_id = '07762c7e-6193-11e5-8ac5-06603eb7f303'
-
-        toolbox.apply_template(P1.get('network'), template_id)
-        #layouts.apply_directed_flow_layout(P1.get('network'))
-
-        #TODO: Process the forward and reverse lists.  Generate [{node1},{edge1},{node2},{edge2},etc...]
-
-        F = P1.get('forward')
-        R = P1.get('reverse')
-        G_prime = P1.get('network')
-
-        new_forward_list = self.label_node_list(F, G, G_prime)  # TODO check efficiency of this call
-
-        #==========================================
-        # Rank the forward paths
-        #==========================================
-        results_list = []
-        try:
-            results_list = [f_e_i for f_e_i in new_forward_list if len(new_forward_list) > 0]
-        except Exception as e:
-            print "error ranking paths"
-            print e.message
-
-        path_scoring = PathScoring()
-
-        results_list_sorted = sorted(results_list, lambda x, y: path_scoring.cross_country_scoring(x, y))
-
-        new_reverse_list = self.label_node_list(R, G, G_prime)  # TODO check efficiency of this call
-        subnet = self.get_subnet(F, G)
+        subnet = self.reattach_original_edges(F, G)
 
         G = None
 
-        return {'forward': P1.get('forward'), 'forward_english': results_list_sorted, 'reverse_english': new_reverse_list, 'reverse': P1.get('reverse'), 'network': subnet.to_cx()} #P1.get('network').to_cx()}
+        # Apply a cytoscape style from a template network
+        template_id = '07762c7e-6193-11e5-8ac5-06603eb7f303'
+        toolbox.apply_template(G_prime, template_id)
 
-    def get_subnet(self, F, G):
+        return {'forward': F, 'forward_english': complete_forward_list, 'reverse_english': complete_reverse_list, 'reverse': R, 'network': subnet.to_cx()} #P1.get('network').to_cx()}
+
+    def reattach_original_edges(self, F, G):
         important_nodes = [item for sublist in F for item in sublist]
 
         H = G.subgraph(important_nodes)
+        edge_ranking = EdgeRanking()
+
+        for source in H.edge:
+            H[source]
+
+            for target in H[source]:
+                best_edge = None
+                top_edge = None
+                for edge in H[source][target]:
+                    H[source][target][edge]["keep"] = False
+
+                    if top_edge is None:
+                        top_edge = H[source][target][edge]
+                    else:
+                        if edge_ranking.edge_type_rank[H[source][target][edge].get("interaction")] < edge_ranking.edge_type_rank[top_edge.get("interaction")]:
+                            top_edge = H[source][target][edge]
+
+                top_edge["keep"] = True
+
         return H
 
     def findDirectedPathsBatch(self, network_cx, original_edge_map, source_target_list, uuid=None, server=None, npaths=20, relation_type=None):
@@ -196,8 +184,8 @@ class DirectedPaths:
 
 
 
-    def label_node_list(self, n_list, G, G_prime):
-        outer = []
+    def reattach_edges(self, n_list, G, G_prime):
+        result_list = []
         for f in n_list:
             inner = []
             #====================================
@@ -224,6 +212,20 @@ class DirectedPaths:
                     inner.append(tmp_edge_list)
                     inner.append(G_prime.node.get(second).get('name'))
 
-            outer.append(inner)
+            result_list.append(inner)
 
-        return outer
+        #==========================================
+        # Rank the forward paths
+        #==========================================
+        results_list = []
+        try:
+            results_list = [f_e_i for f_e_i in result_list if len(result_list) > 0]
+        except Exception as e:
+            print "error ranking paths"
+            print e.message
+
+        path_scoring = PathScoring()
+
+        results_list_sorted = sorted(results_list, lambda x, y: path_scoring.cross_country_scoring(x, y))
+
+        return results_list_sorted

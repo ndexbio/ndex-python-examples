@@ -103,7 +103,12 @@ class PathScoring():
                             if edge_ranking.edge_type_rank[edge.get("interaction")] < edge_ranking.edge_type_rank[top_edge.get("interaction")]:
                                 top_edge = edge
 
-                    path_tuples.append((prefix + str(i), edge_ranking.edge_type_rank[top_edge.get("interaction")]))
+                    if edge_ranking.edge_type_rank.get(top_edge.get("interaction")) is not None:
+                        path_tuples.append((prefix + str(i), edge_ranking.edge_type_rank[top_edge.get("interaction")]))
+                    else:
+                        print "!!!!! NEW EDGE TYPE NOT IN PREFERENCE SCHEDULE !!!!!"
+                        print top_edge.get("interaction")
+                        path_tuples.append((prefix + str(i), 9))
 
                     #print multi_edges
                     #print edge_ranking.edge_type_rank[top_edge.get("interaction")]

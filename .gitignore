@@ -4,4 +4,6 @@
 ndex_examples/merge/test_files/*
 .idea/.name
 .idea/encodings.xml
-
+out_file.txt
+logs
+*.egg-info

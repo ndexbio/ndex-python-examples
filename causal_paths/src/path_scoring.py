@@ -205,7 +205,10 @@ class EdgeRanking:
 
     def get_nice_preference_schedule(self):
         for key in self.edge_class_rank.keys():
-            self.nice_preference_schedule[key.value] = self.edge_class_rank[key]
+            if type(key) is int:
+                self.nice_preference_schedule[key] = self.edge_class_rank[key]
+            else:
+                self.nice_preference_schedule[key.value] = self.edge_class_rank[key]
 
         return self.nice_preference_schedule
 

@@ -15,6 +15,7 @@ import logs
 from ndex.networkn import NdexGraph
 from copy import deepcopy
 from causal_paths import two_way_edges
+from causal_paths.src.path_scoring import EdgeRanking, EdgeEnum
 
 #bottle.BaseRequest.MEMFILE_MAX = 1024 * 1024
 api = Bottle()
@@ -139,7 +140,14 @@ def find_directed_path_directed_post():
     result = dict(data=return_paths)
     return result
 
-
+@api.get('/getPreferenceSchedule')
+def get_preference_schedule():
+    return_dict = {}
+    edgeRanking = EdgeRanking()
+    for edge_enum in EdgeEnum:
+        return_dict[edge_enum.value] = edgeRanking.edge_class_rank[edge_enum]
+    print return_dict
+    return dict(data=return_dict)
 
 @api.post('/directedpath/batch/query')
 def find_directed_path_directed_batch():

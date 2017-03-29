@@ -49,7 +49,7 @@ def find_causal_path_directed(networkid):
 @api.get('/getNetworkNodes/<networkid>')
 def get_network_nodes_by_id(networkid):
     directedPaths = DirectedPaths()
-    return dict(data=directedPaths.findPaths(networkid, source, target))
+    return dict(data={"Message": "Not implemented"})  # directedPaths.findPaths(networkid, source, target))
 
 @api.post('/directedpath/query')
 def find_directed_path_directed_post():
@@ -142,10 +142,10 @@ def find_directed_path_directed_post():
 
 @api.get('/getPreferenceSchedule')
 def get_preference_schedule():
-    return_dict = {}
     edgeRanking = EdgeRanking()
-    for edge_enum in EdgeEnum:
-        return_dict[edge_enum.value] = edgeRanking.edge_class_rank[edge_enum]
+    return_dict = edgeRanking.get_nice_preference_schedule()
+    #for edge_enum in EdgeEnum:
+    #    return_dict[edge_enum.value] = edgeRanking.edge_class_rank[edge_enum]
     print return_dict
     return dict(data=return_dict)
 

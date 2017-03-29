@@ -132,6 +132,7 @@ class PathScoring():
 class EdgeRanking:
     def __init__(self):
         self.edge_types = []
+        self.nice_preference_schedule = {}
 
         self.edge_class_rank = {
             EdgeEnum.specific_protein_protein: [  # 1
@@ -201,6 +202,12 @@ class EdgeRanking:
                 for et in self.edge_class_rank[ect]:
                     if(et not in self.edge_types):
                         self.edge_types.append(et)
+
+    def get_nice_preference_schedule(self):
+        for key in self.edge_class_rank.keys():
+            self.nice_preference_schedule[key.value] = self.edge_class_rank[key]
+
+        return self.nice_preference_schedule
 
     def print_edge_types(self):
         for et in self.edge_types:

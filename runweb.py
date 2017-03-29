@@ -144,9 +144,7 @@ def find_directed_path_directed_post():
 def get_preference_schedule():
     edgeRanking = EdgeRanking()
     return_dict = edgeRanking.get_nice_preference_schedule()
-    #for edge_enum in EdgeEnum:
-    #    return_dict[edge_enum.value] = edgeRanking.edge_class_rank[edge_enum]
-    print return_dict
+
     return dict(data=return_dict)
 
 @api.post('/directedpath/batch/query')

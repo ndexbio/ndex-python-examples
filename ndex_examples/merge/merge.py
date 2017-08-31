@@ -76,7 +76,6 @@ def merge(from_network, to_network, from_network_node_to_gene_map, to_network_ge
 
     return to_network
 
-
 def copy_edge(edge, from_network, to_network, shared_nodes, from_network_node_to_gene_map, added_nodes):
     source_id = to_network.find_or_add_node(edge.s, shared_nodes, from_network_node_to_gene_map, added_nodes)
     target_id = to_network.find_or_add_node(edge.t, shared_nodes, from_network_node_to_gene_map, added_nodes)

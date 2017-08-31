@@ -1,5 +1,5 @@
 
-import ndex.create_aspect as ca
+import ndex.client as nc
 import ontology_utils
 import pronto
 from ndex.networkn import NdexGraph
@@ -36,6 +36,10 @@ print "building network"
 
 map = ontology_utils.ontology2NdexGraph(ontology, term_map, arg.root_term_id)
 
+ndex = nc.Ndex(host="http://www.ndexbio.org", username="drh", password="drh")
+
+map.set_name("GO Biological Process Annotated")
+
 # Apply a cytoscape style from a template network
 #template_id = '4f53171c-600f-11e6-b0a6-06603eb7f303'
 #toolbox.apply_template(Map, template_id)
@@ -45,6 +49,9 @@ map = ontology_utils.ontology2NdexGraph(ontology, term_map, arg.root_term_id)
 
 # Save Map to NDEx in the specified account
 #map.upload_to(arg.ndex_output, arg.username, arg.password)
+
+cx = map.to_cx()
+ndex.save_new_network(cx)
 
 #edge_aspect = ca.edges(map)
 
